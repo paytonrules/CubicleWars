@@ -27,6 +27,16 @@
 		28FD15080DC6FC5B0079059D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28FD15070DC6FC5B0079059D /* QuartzCore.framework */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		07550B8C1269491300C4A7FF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 07550B281269469D00C4A7FF /* UnitTests */;
+			remoteInfo = UnitTests;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		07550B181269468F00C4A7FF /* GTMDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTMDefines.h; sourceTree = "<group>"; };
 		07550B191269468F00C4A7FF /* GTMIPhoneUnitTestDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTMIPhoneUnitTestDelegate.h; sourceTree = "<group>"; };
@@ -217,6 +227,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				07550B8D1269491300C4A7FF /* PBXTargetDependency */,
 			);
 			name = CubicleWars;
 			productName = CubicleWars;
@@ -304,6 +315,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		07550B8D1269491300C4A7FF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 07550B281269469D00C4A7FF /* UnitTests */;
+			targetProxy = 07550B8C1269491300C4A7FF /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		07550B2C1269469E00C4A7FF /* Debug */ = {
