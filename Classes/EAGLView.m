@@ -32,7 +32,8 @@
 
         eaglLayer.opaque = TRUE;
         eaglLayer.drawableProperties = [NSDictionary dictionaryWithObjectsAndKeys:
-                                        [NSNumber numberWithBool:FALSE], kEAGLDrawablePropertyRetainedBacking, kEAGLColorFormatRGBA8, kEAGLDrawablePropertyColorFormat, nil];
+                                        [NSNumber numberWithBool:FALSE], kEAGLDrawablePropertyRetainedBacking, 
+                                        kEAGLColorFormatRGBA8, kEAGLDrawablePropertyColorFormat, nil];
 
         renderer = [[ES2Renderer alloc] init];
 
@@ -102,7 +103,7 @@
 
 - (void)startAnimation
 {
-    if (!animating)
+    if (!animating) // ugh
     {
         if (displayLinkSupported)
         {
