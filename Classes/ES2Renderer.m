@@ -6,6 +6,8 @@
 //  Copyright 8th Light 2010. All rights reserved.
 //
 
+// THIS CODE IS KEPT IN CASE I WANT TO MOVE TO ES2!
+
 #import "ES2Renderer.h"
 
 // uniform index
