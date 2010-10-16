@@ -7,6 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		07550B2F126946B200C4A7FF /* GTMIPhoneUnitTestDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 07550B1A1269468F00C4A7FF /* GTMIPhoneUnitTestDelegate.m */; };
+		07550B30126946B200C4A7FF /* GTMIPhoneUnitTestMain.m in Sources */ = {isa = PBXBuildFile; fileRef = 07550B1B1269468F00C4A7FF /* GTMIPhoneUnitTestMain.m */; };
+		07550B31126946B200C4A7FF /* GTMObjC2Runtime.m in Sources */ = {isa = PBXBuildFile; fileRef = 07550B1D1269468F00C4A7FF /* GTMObjC2Runtime.m */; };
+		07550B32126946B200C4A7FF /* GTMRegex.m in Sources */ = {isa = PBXBuildFile; fileRef = 07550B1F1269468F00C4A7FF /* GTMRegex.m */; };
+		07550B33126946B200C4A7FF /* GTMSenTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 07550B211269468F00C4A7FF /* GTMSenTestCase.m */; };
+		07550B34126946B200C4A7FF /* GTMUnitTestDevLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 07550B231269468F00C4A7FF /* GTMUnitTestDevLog.m */; };
 		1D3623260D0F684500981E51 /* CubicleWarsAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D3623250D0F684500981E51 /* CubicleWarsAppDelegate.m */; };
 		1D60589B0D05DD56006BFB54 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
@@ -22,6 +28,21 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		07550B181269468F00C4A7FF /* GTMDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTMDefines.h; sourceTree = "<group>"; };
+		07550B191269468F00C4A7FF /* GTMIPhoneUnitTestDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTMIPhoneUnitTestDelegate.h; sourceTree = "<group>"; };
+		07550B1A1269468F00C4A7FF /* GTMIPhoneUnitTestDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTMIPhoneUnitTestDelegate.m; sourceTree = "<group>"; };
+		07550B1B1269468F00C4A7FF /* GTMIPhoneUnitTestMain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTMIPhoneUnitTestMain.m; sourceTree = "<group>"; };
+		07550B1C1269468F00C4A7FF /* GTMObjC2Runtime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTMObjC2Runtime.h; sourceTree = "<group>"; };
+		07550B1D1269468F00C4A7FF /* GTMObjC2Runtime.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTMObjC2Runtime.m; sourceTree = "<group>"; };
+		07550B1E1269468F00C4A7FF /* GTMRegex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTMRegex.h; sourceTree = "<group>"; };
+		07550B1F1269468F00C4A7FF /* GTMRegex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTMRegex.m; sourceTree = "<group>"; };
+		07550B201269468F00C4A7FF /* GTMSenTestCase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTMSenTestCase.h; sourceTree = "<group>"; };
+		07550B211269468F00C4A7FF /* GTMSenTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTMSenTestCase.m; sourceTree = "<group>"; };
+		07550B221269468F00C4A7FF /* GTMUnitTestDevLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTMUnitTestDevLog.h; sourceTree = "<group>"; };
+		07550B231269468F00C4A7FF /* GTMUnitTestDevLog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTMUnitTestDevLog.m; sourceTree = "<group>"; };
+		07550B241269468F00C4A7FF /* RunIPhoneUnitTest.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = RunIPhoneUnitTest.sh; sourceTree = "<group>"; };
+		07550B291269469D00C4A7FF /* UnitTests.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UnitTests.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		07550B2B1269469D00C4A7FF /* UnitTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "UnitTests-Info.plist"; sourceTree = "<group>"; };
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D3623240D0F684500981E51 /* CubicleWarsAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CubicleWarsAppDelegate.h; sourceTree = "<group>"; };
 		1D3623250D0F684500981E51 /* CubicleWarsAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CubicleWarsAppDelegate.m; sourceTree = "<group>"; };
@@ -45,6 +66,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		07550B271269469D00C4A7FF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		1D60588F0D05DD3D006BFB54 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -59,6 +87,26 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		07550B171269468F00C4A7FF /* GoogleToolbox */ = {
+			isa = PBXGroup;
+			children = (
+				07550B181269468F00C4A7FF /* GTMDefines.h */,
+				07550B191269468F00C4A7FF /* GTMIPhoneUnitTestDelegate.h */,
+				07550B1A1269468F00C4A7FF /* GTMIPhoneUnitTestDelegate.m */,
+				07550B1B1269468F00C4A7FF /* GTMIPhoneUnitTestMain.m */,
+				07550B1C1269468F00C4A7FF /* GTMObjC2Runtime.h */,
+				07550B1D1269468F00C4A7FF /* GTMObjC2Runtime.m */,
+				07550B1E1269468F00C4A7FF /* GTMRegex.h */,
+				07550B1F1269468F00C4A7FF /* GTMRegex.m */,
+				07550B201269468F00C4A7FF /* GTMSenTestCase.h */,
+				07550B211269468F00C4A7FF /* GTMSenTestCase.m */,
+				07550B221269468F00C4A7FF /* GTMUnitTestDevLog.h */,
+				07550B231269468F00C4A7FF /* GTMUnitTestDevLog.m */,
+				07550B241269468F00C4A7FF /* RunIPhoneUnitTest.sh */,
+			);
+			path = GoogleToolbox;
+			sourceTree = "<group>";
+		};
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
@@ -79,6 +127,7 @@
 			isa = PBXGroup;
 			children = (
 				1D6058910D05DD3D006BFB54 /* CubicleWars.app */,
+				07550B291269469D00C4A7FF /* UnitTests.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -95,12 +144,14 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
+				07550B171269468F00C4A7FF /* GoogleToolbox */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				2514C27610084DB600A42282 /* Shaders */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
+				07550B2B1269469D00C4A7FF /* UnitTests-Info.plist */,
 			);
 			name = CustomTemplate;
 			sourceTree = "<group>";
@@ -137,6 +188,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		07550B281269469D00C4A7FF /* UnitTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 07550B2E1269469E00C4A7FF /* Build configuration list for PBXNativeTarget "UnitTests" */;
+			buildPhases = (
+				07550B251269469D00C4A7FF /* Resources */,
+				07550B261269469D00C4A7FF /* Sources */,
+				07550B271269469D00C4A7FF /* Frameworks */,
+				07550B36126946BA00C4A7FF /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = UnitTests;
+			productName = UnitTests;
+			productReference = 07550B291269469D00C4A7FF /* UnitTests.app */;
+			productType = "com.apple.product-type.application";
+		};
 		1D6058900D05DD3D006BFB54 /* CubicleWars */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "CubicleWars" */;
@@ -167,11 +236,19 @@
 			projectRoot = "";
 			targets = (
 				1D6058900D05DD3D006BFB54 /* CubicleWars */,
+				07550B281269469D00C4A7FF /* UnitTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		07550B251269469D00C4A7FF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		1D60588D0D05DD3D006BFB54 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -184,7 +261,36 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		07550B36126946BA00C4A7FF /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = ./GoogleToolbox/RunIPhoneUnitTest.sh;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
+		07550B261269469D00C4A7FF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				07550B2F126946B200C4A7FF /* GTMIPhoneUnitTestDelegate.m in Sources */,
+				07550B30126946B200C4A7FF /* GTMIPhoneUnitTestMain.m in Sources */,
+				07550B31126946B200C4A7FF /* GTMObjC2Runtime.m in Sources */,
+				07550B32126946B200C4A7FF /* GTMRegex.m in Sources */,
+				07550B33126946B200C4A7FF /* GTMSenTestCase.m in Sources */,
+				07550B34126946B200C4A7FF /* GTMUnitTestDevLog.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		1D60588E0D05DD3D006BFB54 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -200,6 +306,55 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
+		07550B2C1269469E00C4A7FF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/UIKit.framework/Headers/UIKit.h";
+				INFOPLIST_FILE = "UnitTests-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					UIKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = UnitTests;
+				SDKROOT = iphoneos4.0;
+			};
+			name = Debug;
+		};
+		07550B2D1269469E00C4A7FF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/UIKit.framework/Headers/UIKit.h";
+				INFOPLIST_FILE = "UnitTests-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					UIKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = UnitTests;
+				SDKROOT = iphoneos4.0;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
 		1D6058940D05DD3E006BFB54 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -262,6 +417,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		07550B2E1269469E00C4A7FF /* Build configuration list for PBXNativeTarget "UnitTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				07550B2C1269469E00C4A7FF /* Debug */,
+				07550B2D1269469E00C4A7FF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "CubicleWars" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
