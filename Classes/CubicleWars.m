@@ -7,6 +7,7 @@
 
 -(void) loop
 {
+  [controller update];
 }
 
 @end

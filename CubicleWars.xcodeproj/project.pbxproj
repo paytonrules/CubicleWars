@@ -131,7 +131,6 @@
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
 				07550BA6126A2BBB00C4A7FF /* UnitTests-Info.plist */,
-				07550BAA126A2C5400C4A7FF /* unitTestMain.m */,
 			);
 			name = CustomTemplate;
 			sourceTree = "<group>";
@@ -139,6 +138,7 @@
 		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
+				07550BAA126A2C5400C4A7FF /* unitTestMain.m */,
 				32CA4F630368D1EE00C91783 /* CubicleWars_Prefix.pch */,
 				29B97316FDCFA39411CA2CEA /* main.m */,
 			);
@@ -175,6 +175,7 @@
 				07550BA0126A2BBB00C4A7FF /* Resources */,
 				07550BA1126A2BBB00C4A7FF /* Sources */,
 				07550BA2126A2BBB00C4A7FF /* Frameworks */,
+				0766C33112714A3B004BBD75 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -239,6 +240,22 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		0766C33112714A3B004BBD75 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = ./UnitTests/RunIPhoneUnitTest.sh;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		07550BA1126A2BBB00C4A7FF /* Sources */ = {

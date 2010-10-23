@@ -2,5 +2,6 @@
 
 @protocol GameController
 
+-(void) update;
 
 @end
