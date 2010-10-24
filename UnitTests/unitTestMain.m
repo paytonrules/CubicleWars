@@ -29,29 +29,36 @@
 
 @implementation TestClass
 
--(BOOL) testGameHasController
+-(void) testGameCallsUpdateOnControllerWithDelta
+{ 
+  NSException *exception = [NSException exceptionWithName:@"Test Failed"
+                                                   reason:@"Controller expected to be updated with delta and wasn't"
+                                                 userInfo:[NSDictionary dictionaryWithObjectsAndKeys: @"TestClass", @"className",
+                                                                                                      @"GameCallsUpdateOnController", @"name", 
+                                                                                                      [NSNumber numberWithInt:__LINE__], @"line", 
+                                                                                                      [NSString stringWithUTF8String:__FILE__], @"file", nil]];
+    
+  [exception raise];
+}
+
+-(void) testGameCallsUpdateOnController
 {
   CubicleWars *game = [[CubicleWars alloc] init];
-  MockGameController *controller = [[[MockGameController alloc] init] autorelease];
+  MockGameController *controller = [[[MockGameController alloc] init] autorelease]; 
   game.controller = controller;
-
+    
   [game loop];
-
+    
   if (controller.updated != YES)
   {
-    fprintf(stderr, "%s:%ld: error: -[%s %s] : %s\n",
-            __FILE__, //[filename UTF8String],
-            (long) __LINE__, //(long)[lineNumber integerValue],
-            "TestClass", //[className UTF8String],
-            "applicationDidFinishLaunching", // [name UTF8String],
-            "Your wrong"); // [[exception reason] UTF8String]);
-    fflush(stderr);
-    return NO;
-  } 
-  else 
-  {
-    return YES;
-  }
+    NSException *exception = [NSException exceptionWithName:@"Test Failed"
+                                                     reason:@"Controller expected to be updated and wasn't"
+                                                   userInfo:[NSDictionary dictionaryWithObjectsAndKeys: @"className", @"TestClass",
+                                                                                                        @"name", @"GameCallsUpdateOnController", 
+                                                                                                        @"line", [NSNumber numberWithInt:__LINE__], 
+                                                                                                        @"file", [NSString stringWithUTF8String:__FILE__], nil]];
+    [exception raise];
+  }    
 
   [game release];
 }
@@ -60,9 +67,43 @@
 {
   int errors = 0;
   int successes = 0;
+  
+  @try 
+  {
+    [self testGameCallsUpdateOnController];
+    successes++;
+  }
+  @catch (NSException * e) 
+  {
+    fprintf(stderr, "%s:%ld error: -[%s %s] : %s\n",
+            [[[e userInfo] objectForKey:@"file"] UTF8String],
+            [[[e userInfo] objectForKey:@"line"] longValue],
+            [[[e userInfo] objectForKey:@"className"] UTF8String],
+            [[[e userInfo] objectForKey:@"name"] UTF8String],
+            [[e reason] UTF8String]);  
+    errors++;
+  }
 
-  [self testGameHasController] ? successes++ : errors++;
-
+  NSLog(@"About to try the failing test");
+  @try 
+  {
+    [self testGameCallsUpdateOnControllerWithDelta];
+    successes++;
+  }
+  @catch (NSException * e) 
+  {
+    fprintf(stderr, "%s:%ld: error: %s\n",
+            [[[e userInfo] objectForKey:@"file"] UTF8String],
+            [[[e userInfo] objectForKey:@"line"] longValue],
+            [[[e userInfo] objectForKey:@"className"] UTF8String],
+            [[[e userInfo] objectForKey:@"name"] UTF8String],
+            [[e reason] UTF8String]);
+    
+    errors++;
+  }
+  
+  fflush(stderr);
+  
   NSLog(@"Tests ran with %d passing tests and %d failing tests", successes, errors);
   
   // You should terminate with the number of failures
