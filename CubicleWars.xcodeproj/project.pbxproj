@@ -11,6 +11,7 @@
 		07550BB6126A4B5800C4A7FF /* CubicleWarsAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D3623250D0F684500981E51 /* CubicleWarsAppDelegate.m */; };
 		07550BC8126A615000C4A7FF /* CubicleWars.m in Sources */ = {isa = PBXBuildFile; fileRef = 07550BC7126A615000C4A7FF /* CubicleWars.m */; };
 		07550BC9126A615000C4A7FF /* CubicleWars.m in Sources */ = {isa = PBXBuildFile; fileRef = 07550BC7126A615000C4A7FF /* CubicleWars.m */; };
+		0766C4AC1274CC04004BBD75 /* OCSpecFail.m in Sources */ = {isa = PBXBuildFile; fileRef = 0766C4AB1274CC04004BBD75 /* OCSpecFail.m */; };
 		1D3623260D0F684500981E51 /* CubicleWarsAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D3623250D0F684500981E51 /* CubicleWarsAppDelegate.m */; };
 		1D60589B0D05DD56006BFB54 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
@@ -32,6 +33,8 @@
 		07550BC6126A615000C4A7FF /* CubicleWars.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CubicleWars.h; sourceTree = "<group>"; };
 		07550BC7126A615000C4A7FF /* CubicleWars.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CubicleWars.m; sourceTree = "<group>"; };
 		07550BEA126A64F100C4A7FF /* GameController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameController.h; sourceTree = "<group>"; };
+		0766C4AA1274CC04004BBD75 /* OCSpecFail.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCSpecFail.h; sourceTree = "<group>"; };
+		0766C4AB1274CC04004BBD75 /* OCSpecFail.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCSpecFail.m; sourceTree = "<group>"; };
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D3623240D0F684500981E51 /* CubicleWarsAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CubicleWarsAppDelegate.h; sourceTree = "<group>"; };
 		1D3623250D0F684500981E51 /* CubicleWarsAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CubicleWarsAppDelegate.m; sourceTree = "<group>"; };
@@ -84,6 +87,15 @@
 			name = Protocols;
 			sourceTree = "<group>";
 		};
+		0766C4AD1274CC0D004BBD75 /* TestFramework */ = {
+			isa = PBXGroup;
+			children = (
+				0766C4AA1274CC04004BBD75 /* OCSpecFail.h */,
+				0766C4AB1274CC04004BBD75 /* OCSpecFail.m */,
+			);
+			name = TestFramework;
+			sourceTree = "<group>";
+		};
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
@@ -123,6 +135,7 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
+				0766C4AD1274CC0D004BBD75 /* TestFramework */,
 				07550BE7126A64E300C4A7FF /* Protocols */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				2514C27610084DB600A42282 /* Shaders */,
@@ -265,6 +278,7 @@
 				07550BB6126A4B5800C4A7FF /* CubicleWarsAppDelegate.m in Sources */,
 				07550BAB126A2C5400C4A7FF /* unitTestMain.m in Sources */,
 				07550BC9126A615000C4A7FF /* CubicleWars.m in Sources */,
+				0766C4AC1274CC04004BBD75 /* OCSpecFail.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

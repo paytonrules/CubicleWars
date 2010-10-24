@@ -1,6 +1,7 @@
 #import <UIKit/UIKit.h>
 #import "CubicleWars.h"
 #import "GameController.h"
+#import "OCSpecFail.h"
 
 @interface MockGameController : NSObject<GameController>
 {
@@ -29,16 +30,21 @@
 
 @implementation TestClass
 
--(void) testGameCallsUpdateOnControllerWithDelta
-{ 
+-(void) fail:(NSString *)reason atLine:(NSNumber *) line
+{
   NSException *exception = [NSException exceptionWithName:@"Test Failed"
-                                                   reason:@"Controller expected to be updated with delta and wasn't"
+                                                   reason:reason
                                                  userInfo:[NSDictionary dictionaryWithObjectsAndKeys: @"TestClass", @"className",
-                                                                                                      @"GameCallsUpdateOnController", @"name", 
-                                                                                                      [NSNumber numberWithInt:__LINE__], @"line", 
-                                                                                                      [NSString stringWithUTF8String:__FILE__], @"file", nil]];
-    
+                                                           @"GameCallsUpdateOnController", @"name", 
+                                                           line, @"line", 
+                                                           [NSString stringWithUTF8String:__FILE__], @"file", nil]];
+  
   [exception raise];
+}
+
+-(void) testGameCallsUpdateOnControllerWithDelta
+{
+  FAIL(@"Controller expected to be updated with delta and wasn't");
 }
 
 -(void) testGameCallsUpdateOnController
@@ -75,7 +81,7 @@
   }
   @catch (NSException * e) 
   {
-    fprintf(stderr, "%s:%ld error: -[%s %s] : %s\n",
+    fprintf(stderr, "%s:%ld: error: -[%s %s] : %s\n",
             [[[e userInfo] objectForKey:@"file"] UTF8String],
             [[[e userInfo] objectForKey:@"line"] longValue],
             [[[e userInfo] objectForKey:@"className"] UTF8String],
@@ -92,7 +98,7 @@
   }
   @catch (NSException * e) 
   {
-    fprintf(stderr, "%s:%ld: error: %s\n",
+    fprintf(stderr, "%s:%ld: error: -[%s %s] : %s\n",
             [[[e userInfo] objectForKey:@"file"] UTF8String],
             [[[e userInfo] objectForKey:@"line"] longValue],
             [[[e userInfo] objectForKey:@"className"] UTF8String],
