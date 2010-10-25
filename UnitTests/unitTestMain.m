@@ -30,18 +30,6 @@
 
 @implementation TestClass
 
--(void) fail:(NSString *)reason atLine:(NSNumber *) line
-{
-  NSException *exception = [NSException exceptionWithName:@"Test Failed"
-                                                   reason:reason
-                                                 userInfo:[NSDictionary dictionaryWithObjectsAndKeys: @"TestClass", @"className",
-                                                           @"GameCallsUpdateOnController", @"name", 
-                                                           line, @"line", 
-                                                           [NSString stringWithUTF8String:__FILE__], @"file", nil]];
-  
-  [exception raise];
-}
-
 -(void) testGameCallsUpdateOnControllerWithDelta
 {
   FAIL(@"Controller expected to be updated with delta and wasn't");
@@ -74,6 +62,16 @@
   int errors = 0;
   int successes = 0;
   
+  @try {
+    [OCSpecFail fail:@"Dude" atLine:1 inFile:@"file"];
+    errors++;
+  }
+  @catch (NSException * e) {
+    successes++;
+  }
+  
+  describe("Controller", [
+  
   @try 
   {
     [self testGameCallsUpdateOnController];
@@ -90,7 +88,6 @@
     errors++;
   }
 
-  NSLog(@"About to try the failing test");
   @try 
   {
     [self testGameCallsUpdateOnControllerWithDelta];
