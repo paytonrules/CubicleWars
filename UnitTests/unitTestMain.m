@@ -2,6 +2,7 @@
 #import "CubicleWars.h"
 #import "GameController.h"
 #import "OCSpecFail.h"
+#import "OCSpecDescription.h"
 
 @interface MockGameController : NSObject<GameController>
 {
@@ -57,56 +58,85 @@
   [game release];
 }
 
+-(void) testDescribeWithNoErrors
+{
+  OCSpecDescription *description = [[[OCSpecDescription alloc] init] autorelease];
+  
+  [description describe:@"It Should Do Something" onExamples: ^(void) {}, nil];
+  
+  if (description.errors != 0) {
+    FAIL(@"Should have had 0 errors.  Did not");
+  }
+}
+
+-(void) testDescribeWithOneError
+{
+  OCSpecDescription *description = [[[OCSpecDescription alloc] init] autorelease];
+  
+  [description describe:@"It Should Do Something" onExamples: ^(void) {FAIL(@"Fail");}, nil];
+  
+  if (description.errors != 1)
+  {
+    FAIL(@"Should have had 1 error, did not");
+  }
+}
+
 -(void) applicationDidFinishLaunching:(UIApplication *) app
 {
-  int errors = 0;
-  int successes = 0;
+  __block int errors = 0;
+  __block int successes = 0;
   
-  @try {
-    [OCSpecFail fail:@"Dude" atLine:1 inFile:@"file"];
-    errors++;
-  }
-  @catch (NSException * e) {
-    successes++;
-  }
+  void (^failTest) (void) = ^ {
+    @try 
+    {
+      [OCSpecFail fail:@"Dude" atLine:1 inFile:@"file"];
+      FAIL(@"Did not fail - in fail");
+    }
+    @catch (NSException *e) 
+    {
+      if ([e reason] != @"Dude")
+        [e raise];
+    }
+  };
   
-  describe("Controller", [
-  
-  @try 
-  {
+  void (^callUpdate) (void) = ^ {
     [self testGameCallsUpdateOnController];
-    successes++;
-  }
-  @catch (NSException * e) 
-  {
-    fprintf(stderr, "%s:%ld: error: -[%s %s] : %s\n",
-            [[[e userInfo] objectForKey:@"file"] UTF8String],
-            [[[e userInfo] objectForKey:@"line"] longValue],
-            [[[e userInfo] objectForKey:@"className"] UTF8String],
-            [[[e userInfo] objectForKey:@"name"] UTF8String],
-            [[e reason] UTF8String]);  
-    errors++;
-  }
-
-  @try 
-  {
+  };
+  
+  void (^callUpdateWithDelta) (void) = ^ {
     [self testGameCallsUpdateOnControllerWithDelta];
-    successes++;
-  }
-  @catch (NSException * e) 
+  };
+  
+  void (^shouldDescribeNoErrors) (void) = ^ {
+    [self testDescribeWithNoErrors];
+  };
+  
+  void (^shouldDescribeWithOneError) (void) = ^ {
+    [self testDescribeWithOneError];
+  };
+  
+  void (^tests[]) (void) = {failTest, callUpdate, callUpdateWithDelta, shouldDescribeNoErrors, shouldDescribeWithOneError};
+
+  for (int i = 0; i < 5; ++i) 
   {
-    fprintf(stderr, "%s:%ld: error: -[%s %s] : %s\n",
-            [[[e userInfo] objectForKey:@"file"] UTF8String],
-            [[[e userInfo] objectForKey:@"line"] longValue],
-            [[[e userInfo] objectForKey:@"className"] UTF8String],
-            [[[e userInfo] objectForKey:@"name"] UTF8String],
-            [[e reason] UTF8String]);
-    
-    errors++;
+    @try 
+    {
+      tests[i]();
+      successes++;
+    }
+    @catch (NSException * e) 
+    {
+      fprintf(stderr, "%s:%ld: error: -[%s %s] : %s\n",
+              [[[e userInfo] objectForKey:@"file"] UTF8String],
+              [[[e userInfo] objectForKey:@"line"] longValue],
+              [[[e userInfo] objectForKey:@"className"] UTF8String],
+              [[[e userInfo] objectForKey:@"name"] UTF8String],
+              [[e reason] UTF8String]);  
+      errors++;
+    }
   }
   
   fflush(stderr);
-  
   NSLog(@"Tests ran with %d passing tests and %d failing tests", successes, errors);
   
   // You should terminate with the number of failures
