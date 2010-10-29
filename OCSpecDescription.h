@@ -6,6 +6,6 @@
 }
 
 @property(assign) NSInteger errors;
--(void) describe:(NSString *)name onExamples:(id) test, ...;
+-(void) describe:(NSString *)name onArrayOfExamples:(NSArray *) examples;
 
 @end

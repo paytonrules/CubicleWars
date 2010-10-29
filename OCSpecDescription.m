@@ -4,44 +4,20 @@
 
 @synthesize errors;
 
--(void) describe:(NSString *)name onExamples:(id) test, ...
+-(void) describe:(NSString *)name onArrayOfExamples:(NSArray *)examples
 {
-  id currentTest;
-  va_list testList;
-  
-  if (test)
+  [examples enumerateObjectsUsingBlock: ^(id obj, NSUInteger idx, BOOL *stop) 
   {
-    va_start(testList, test);
-    while ( currentTest = va_arg(testList, id) )
+    @try 
     {
-      @try 
-      {
-        ((void (^)(void)) test)();
-      }
-      @catch (NSException * e) 
-      {
-        self.errors++;
-      }
+      void (^test) (void) = obj;
+      test();
     }
-    va_end(testList);
-  }
-  
-  /*
-  @try 
-  {
-    
-    //successes++;
-  }
-  @catch (NSException * e) 
-  {
-    fprintf(stderr, "%s:%ld: error: -[%s %s] : %s\n",
-            [[[e userInfo] objectForKey:@"file"] UTF8String],
-            [[[e userInfo] objectForKey:@"line"] longValue],
-            [[[e userInfo] objectForKey:@"className"] UTF8String],
-            [[[e userInfo] objectForKey:@"name"] UTF8String],
-            [[e reason] UTF8String]);  
-    //  errors++;
-  }*/
+    @catch (NSException * e) 
+    {
+      self.errors++;
+    }
+  }];
 }
 
 @end

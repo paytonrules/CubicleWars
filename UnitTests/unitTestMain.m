@@ -29,51 +29,27 @@
 
 @end
 
-@implementation TestClass
-
--(void) testGameCallsUpdateOnControllerWithDelta
-{
-  FAIL(@"Controller expected to be updated with delta and wasn't");
-}
-
--(void) testGameCallsUpdateOnController
-{
-  CubicleWars *game = [[CubicleWars alloc] init];
-  MockGameController *controller = [[[MockGameController alloc] init] autorelease]; 
-  game.controller = controller;
-    
-  [game loop];
-    
-  if (controller.updated != YES)
-  {
-    NSException *exception = [NSException exceptionWithName:@"Test Failed"
-                                                     reason:@"Controller expected to be updated and wasn't"
-                                                   userInfo:[NSDictionary dictionaryWithObjectsAndKeys: @"className", @"TestClass",
-                                                                                                        @"name", @"GameCallsUpdateOnController", 
-                                                                                                        @"line", [NSNumber numberWithInt:__LINE__], 
-                                                                                                        @"file", [NSString stringWithUTF8String:__FILE__], nil]];
-    [exception raise];
-  }    
-
-  [game release];
-}
-
--(void) testDescribeWithNoErrors
+void testDescribeWithNoErrors()
 {
   OCSpecDescription *description = [[[OCSpecDescription alloc] init] autorelease];
   
-  [description describe:@"It Should Do Something" onExamples: ^(void) {}, nil];
+  [description describe:@"It Should Do Something" onArrayOfExamples: [[[NSArray alloc] init] autorelease]];
   
   if (description.errors != 0) {
     FAIL(@"Should have had 0 errors.  Did not");
   }
 }
 
--(void) testDescribeWithOneError
+void testDescribeWithOneError()
 {
   OCSpecDescription *description = [[[OCSpecDescription alloc] init] autorelease];
   
-  [description describe:@"It Should Do Something" onExamples: ^(void) {FAIL(@"Fail");}, nil];
+  void (^test) (void) = Block_copy(^(void) {FAIL(@"Fail");});
+  NSArray *tests = [NSArray arrayWithObject:test];
+  
+  [description describe:@"It Should Do Something" onArrayOfExamples: tests];
+  
+  Block_release(test);
   
   if (description.errors != 1)
   {
@@ -81,61 +57,137 @@
   }
 }
 
+void testGameCallsUpdateOnControllerWithDelta()
+{
+  FAIL(@"Controller expected to be updated with delta and wasn't");
+}
+
+void testGameCallsUpdateOnController()
+{
+  CubicleWars *game = [[CubicleWars alloc] init];
+  MockGameController *controller = [[[MockGameController alloc] init] autorelease]; 
+  game.controller = controller;
+  
+  [game loop];
+  
+  if (controller.updated != YES)
+  {
+    NSException *exception = [NSException exceptionWithName:@"Test Failed"
+                                                     reason:@"Controller expected to be updated and wasn't"
+                                                   userInfo:[NSDictionary dictionaryWithObjectsAndKeys: @"className", @"TestClass",
+                                                             @"name", @"GameCallsUpdateOnController", 
+                                                             @"line", [NSNumber numberWithInt:__LINE__], 
+                                                             @"file", [NSString stringWithUTF8String:__FILE__], nil]];
+    [exception raise];
+  }    
+  
+  [game release];
+}
+
+void testFail() 
+{
+  @try 
+  {
+    [OCSpecFail fail:@"Dude" atLine:1 inFile:@"file"];
+    FAIL(@"Did not fail - in fail");
+  }
+  @catch (NSException *e) 
+  {
+    if ([e reason] != @"Dude")
+      [e raise];
+  }
+};
+
+
+@implementation TestClass
+
+
+
 -(void) applicationDidFinishLaunching:(UIApplication *) app
 {
-  __block int errors = 0;
-  __block int successes = 0;
+  int errors = 0;
+  int successes = 0;
   
-  void (^failTest) (void) = ^ {
-    @try 
-    {
-      [OCSpecFail fail:@"Dude" atLine:1 inFile:@"file"];
-      FAIL(@"Did not fail - in fail");
-    }
-    @catch (NSException *e) 
-    {
-      if ([e reason] != @"Dude")
-        [e raise];
-    }
-  };
-  
-  void (^callUpdate) (void) = ^ {
-    [self testGameCallsUpdateOnController];
-  };
-  
-  void (^callUpdateWithDelta) (void) = ^ {
-    [self testGameCallsUpdateOnControllerWithDelta];
-  };
-  
-  void (^shouldDescribeNoErrors) (void) = ^ {
-    [self testDescribeWithNoErrors];
-  };
-  
-  void (^shouldDescribeWithOneError) (void) = ^ {
-    [self testDescribeWithOneError];
-  };
-  
-  void (^tests[]) (void) = {failTest, callUpdate, callUpdateWithDelta, shouldDescribeNoErrors, shouldDescribeWithOneError};
-
-  for (int i = 0; i < 5; ++i) 
+  @try 
   {
-    @try 
-    {
-      tests[i]();
-      successes++;
-    }
-    @catch (NSException * e) 
-    {
-      fprintf(stderr, "%s:%ld: error: -[%s %s] : %s\n",
-              [[[e userInfo] objectForKey:@"file"] UTF8String],
-              [[[e userInfo] objectForKey:@"line"] longValue],
-              [[[e userInfo] objectForKey:@"className"] UTF8String],
-              [[[e userInfo] objectForKey:@"name"] UTF8String],
-              [[e reason] UTF8String]);  
-      errors++;
-    }
+    testGameCallsUpdateOnController();
+    successes++;
+  }
+  @catch (NSException * e) 
+  {
+    fprintf(stderr, "%s:%ld: error: -[%s %s] : %s\n",
+            [[[e userInfo] objectForKey:@"file"] UTF8String],
+            [[[e userInfo] objectForKey:@"line"] longValue],
+            [[[e userInfo] objectForKey:@"className"] UTF8String],
+            [[[e userInfo] objectForKey:@"name"] UTF8String],
+            [[e reason] UTF8String]);  
+    errors++;
+  }
+
+  @try 
+  {
+    testGameCallsUpdateOnControllerWithDelta();
+    successes++;
+  }
+  @catch (NSException * e) 
+  {
+    fprintf(stderr, "%s:%ld: error: -[%s %s] : %s\n",
+            [[[e userInfo] objectForKey:@"file"] UTF8String],
+            [[[e userInfo] objectForKey:@"line"] longValue],
+            [[[e userInfo] objectForKey:@"className"] UTF8String],
+            [[[e userInfo] objectForKey:@"name"] UTF8String],
+            [[e reason] UTF8String]);  
+    errors++;
   }
   
+  @try 
+  {
+    testDescribeWithNoErrors();
+    successes++;
+  }
+  @catch (NSException * e) 
+  {
+    fprintf(stderr, "%s:%ld: error: -[%s %s] : %s\n",
+            [[[e userInfo] objectForKey:@"file"] UTF8String],
+            [[[e userInfo] objectForKey:@"line"] longValue],
+            [[[e userInfo] objectForKey:@"className"] UTF8String],
+            [[[e userInfo] objectForKey:@"name"] UTF8String],
+            [[e reason] UTF8String]);  
+    errors++;
+  }
+  
+  @try 
+  {
+    testDescribeWithOneError();
+    successes++;
+  }
+  @catch (NSException * e) 
+  {
+    fprintf(stderr, "%s:%ld: error: -[%s %s] : %s\n",
+            [[[e userInfo] objectForKey:@"file"] UTF8String],
+            [[[e userInfo] objectForKey:@"line"] longValue],
+            [[[e userInfo] objectForKey:@"className"] UTF8String],
+            [[[e userInfo] objectForKey:@"name"] UTF8String],
+            [[e reason] UTF8String]);  
+    errors++;
+  }
+  
+  @try 
+  {
+    testFail();
+    successes++;
+  }
+  @catch (NSException * e) 
+  {
+    fprintf(stderr, "%s:%ld: error: -[%s %s] : %s\n",
+            [[[e userInfo] objectForKey:@"file"] UTF8String],
+            [[[e userInfo] objectForKey:@"line"] longValue],
+            [[[e userInfo] objectForKey:@"className"] UTF8String],
+            [[[e userInfo] objectForKey:@"name"] UTF8String],
+            [[e reason] UTF8String]);  
+    errors++;
+  }
+
   fflush(stderr);
   NSLog(@"Tests ran with %d passing tests and %d failing tests", successes, errors);
   
