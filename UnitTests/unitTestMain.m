@@ -43,6 +43,7 @@ void testDescribeWithNoErrors()
 void testDescribeWithOneError()
 {
   OCSpecDescription *description = [[[OCSpecDescription alloc] init] autorelease];
+  description.outputter = [NSFileHandle fileHandleWithNullDevice];
   
   void (^test) (void) = [^(void) {FAIL(@"Fail");} copy];
   NSArray *tests = [NSArray arrayWithObject:test];
@@ -59,19 +60,10 @@ void testDescribeWithOneError()
 
 void testDescribeWithErrorWritesExceptionToOutputter()
 {
-  NSLog(@"Running the testDescribeWithErrorWritesExceptionToOutputter test");
   NSString *outputterPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"test.txt"];
   NSFileManager *fileManager = [[[NSFileManager alloc] init] autorelease];
-  
-  if ([fileManager createFileAtPath:outputterPath contents:nil attributes:nil] == NO)
-    FAIL(@"Could not create tempfile");
- 
+  [fileManager createFileAtPath:outputterPath contents:nil attributes:nil];
   NSFileHandle *outputter = [NSFileHandle fileHandleForWritingAtPath:outputterPath];
-  
-  if (outputter == nil) 
-  {
-    FAIL(@"Could not create file outputter");
-  }
   
   OCSpecDescription *description = [[[OCSpecDescription alloc] init] autorelease];
   description.outputter = outputter;
@@ -85,11 +77,6 @@ void testDescribeWithErrorWritesExceptionToOutputter()
   Block_release(test);
   
   NSFileHandle *inputFile = [NSFileHandle fileHandleForReadingAtPath:outputterPath];
-  
-  if (inputFile == nil) 
-  {
-    FAIL(@"Could not create input file handle");
-  }
   
   NSString *outputException = [[[NSString alloc] initWithData:[inputFile readDataToEndOfFile] 
                                                 encoding:NSUTF8StringEncoding] autorelease];
@@ -106,7 +93,14 @@ void testDescribeWithErrorWritesExceptionToOutputter()
   }
 }
 
-// Default outputter is standarderrr
+void testDefaultOutputterIsStandardError()
+{
+  OCSpecDescription *description = [[[OCSpecDescription alloc] init] autorelease];
+  
+  if (description.outputter != [NSFileHandle fileHandleWithStandardError])
+    FAIL(@"Should have had standard error.  Didn't");
+}
+      
 // Test works with multiple tests (and errors/successes)
 // Clean up these tests below!
    // Make them use describes
@@ -248,6 +242,21 @@ void testFail()
   @try 
   {
     testDescribeWithErrorWritesExceptionToOutputter();
+  }
+  @catch (NSException * e) 
+  {
+    fprintf(stderr, "%s:%ld: error: -[%s %s] : %s\n",
+            [[[e userInfo] objectForKey:@"file"] UTF8String],
+            [[[e userInfo] objectForKey:@"line"] longValue],
+            [[[e userInfo] objectForKey:@"className"] UTF8String],
+            [[[e userInfo] objectForKey:@"name"] UTF8String],
+            [[e reason] UTF8String]);  
+    errors++;
+  }
+  
+  @try 
+  {
+    testDefaultOutputterIsStandardError();
   }
   @catch (NSException * e) 
   {
