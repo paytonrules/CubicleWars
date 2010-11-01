@@ -100,10 +100,54 @@ void testDefaultOutputterIsStandardError()
   if (description.outputter != [NSFileHandle fileHandleWithStandardError])
     FAIL(@"Should have had standard error.  Didn't");
 }
+
+void testDescribeWorksWithMultipleTests()
+{
+  OCSpecDescription *description = [[[OCSpecDescription alloc] init] autorelease];
+  description.outputter = [NSFileHandle fileHandleWithNullDevice];
+  
+  void (^testOne) (void) = [^(void) {FAIL(@"Fail One");} copy];
+  void (^testTwo) (void) = [^(void) {FAIL(@"Fail Two");} copy];
+  
+  NSArray *tests = [NSArray arrayWithObjects:testOne, testTwo, nil];
+  
+  [testOne release];
+  [testTwo release];
+  
+  [description describe:@"It Should Do Something" onArrayOfExamples: tests];
+  
+  if (description.errors != 2)
+  {
+    FAIL(@"Should have had two errors, didn't");
+  }
+}
+
+void testDescribeWorksWithMutlipleSuccesses()
+{
+  OCSpecDescription *description = [[[OCSpecDescription alloc] init] autorelease];
+  description.outputter = [NSFileHandle fileHandleWithNullDevice];
+  
+  void (^testOne) (void) = [^(void) {} copy];
+  void (^testTwo) (void) = [^(void) {} copy];
+  
+  NSArray *tests = [NSArray arrayWithObjects:testOne, testTwo, nil];
+  
+  [testOne release];
+  [testTwo release];
+  
+  [description describe:@"It Should Do Something" onArrayOfExamples: tests];
+  
+  if (description.successes != 2)
+  {
+    FAIL(@"Should have had two successes, didn't");
+  }
+}
       
 // Test works with multiple tests (and errors/successes)
 // Clean up these tests below!
    // Make them use describes
+   // Stop calling functions - stop loading arrays.  Do it the way you want to.  Don't forget these blocks need to be copied
+   // See if you can move that out of main
    // Probably get the describe into the actual error message
    // Kill block duplication - maybe with an it.
   
@@ -268,7 +312,22 @@ void testFail()
             [[e reason] UTF8String]);  
     errors++;
   }
-
+  
+  @try 
+  {
+    testDescribeWorksWithMultipleTests();
+  }
+  @catch (NSException * e) 
+  {
+    fprintf(stderr, "%s:%ld: error: -[%s %s] : %s\n",
+            [[[e userInfo] objectForKey:@"file"] UTF8String],
+            [[[e userInfo] objectForKey:@"line"] longValue],
+            [[[e userInfo] objectForKey:@"className"] UTF8String],
+            [[[e userInfo] objectForKey:@"name"] UTF8String],
+            [[e reason] UTF8String]);  
+    errors++;
+  }
+  
   fflush(stderr);
   NSLog(@"Tests ran with %d passing tests and %d failing tests", successes, errors);
   

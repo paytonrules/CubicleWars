@@ -2,7 +2,7 @@
 
 @implementation OCSpecDescription
 
-@synthesize errors, outputter;
+@synthesize errors, successes, outputter;
 
 -(id) init
 {
@@ -21,6 +21,7 @@
     {
       void (^test) (void) = obj;
       test();
+      self.successes++;
     }
     @catch (NSException * e)
     {
