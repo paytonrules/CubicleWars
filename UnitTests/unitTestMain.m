@@ -57,9 +57,66 @@ void testDescribeWithOneError()
   }
 }
 
+void testDescribeWithErrorWritesExceptionToOutputter()
+{
+  NSLog(@"Running the testDescribeWithErrorWritesExceptionToOutputter test");
+  NSString *outputterPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"test.txt"];
+  NSFileManager *fileManager = [[[NSFileManager alloc] init] autorelease];
+  
+  if ([fileManager createFileAtPath:outputterPath contents:nil attributes:nil] == NO)
+    FAIL(@"Could not create tempfile");
+ 
+  NSFileHandle *outputter = [NSFileHandle fileHandleForWritingAtPath:outputterPath];
+  
+  if (outputter == nil) 
+  {
+    FAIL(@"Could not create file outputter");
+  }
+  
+  OCSpecDescription *description = [[[OCSpecDescription alloc] init] autorelease];
+  description.outputter = outputter;
+  
+  int outputLine = __LINE__ + 1;
+  void (^test) (void) = [^(void) {FAIL(@"Fail");} copy];
+  NSArray *tests = [NSArray arrayWithObject:test];
+  
+  [description describe:@"It Should Do Something" onArrayOfExamples: tests];
+  
+  Block_release(test);
+  
+  NSFileHandle *inputFile = [NSFileHandle fileHandleForReadingAtPath:outputterPath];
+  
+  if (inputFile == nil) 
+  {
+    FAIL(@"Could not create input file handle");
+  }
+  
+  NSString *outputException = [[[NSString alloc] initWithData:[inputFile readDataToEndOfFile] 
+                                                encoding:NSUTF8StringEncoding] autorelease];
+  
+  NSString *errorFormat = [NSString stringWithFormat:@"%s:%ld: error: %@",
+                           __FILE__,
+                           outputLine,
+                           @"Fail"];
+  
+  if ([outputException compare:errorFormat] != 0)
+  {
+    NSString *failMessage = [NSString stringWithFormat:@"%@ expected, received %@", errorFormat, outputException];
+    FAIL(failMessage);
+  }
+}
+
+// Default outputter is standarderrr
+// Test works with multiple tests (and errors/successes)
+// Clean up these tests below!
+   // Make them use describes
+   // Probably get the describe into the actual error message
+   // Kill block duplication - maybe with an it.
+  
+
 void testGameCallsUpdateOnControllerWithDelta()
 {
-//  FAIL(@"Controller expected to be updated with delta and wasn't");
+ // FAIL(@"Controller expected to be updated with delta and wasn't");
 }
 
 void testGameCallsUpdateOnController()
@@ -176,6 +233,21 @@ void testFail()
   {
     testFail();
     successes++;
+  }
+  @catch (NSException * e) 
+  {
+    fprintf(stderr, "%s:%ld: error: -[%s %s] : %s\n",
+            [[[e userInfo] objectForKey:@"file"] UTF8String],
+            [[[e userInfo] objectForKey:@"line"] longValue],
+            [[[e userInfo] objectForKey:@"className"] UTF8String],
+            [[[e userInfo] objectForKey:@"name"] UTF8String],
+            [[e reason] UTF8String]);  
+    errors++;
+  }
+  
+  @try 
+  {
+    testDescribeWithErrorWritesExceptionToOutputter();
   }
   @catch (NSException * e) 
   {

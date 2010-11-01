@@ -1,0 +1,2 @@
+2010-10-31 11:23:12.558 UnitTests[95495:903] Successfully redirected standard error
+2010-10-31 11:23:12.559 UnitTests[95495:903] Describing
