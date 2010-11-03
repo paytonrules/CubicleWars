@@ -142,14 +142,13 @@ void testDescribeWorksWithMutlipleSuccesses()
     FAIL(@"Should have had two successes, didn't");
   }
 }
-      
-// Test works with multiple tests (and errors/successes)
+
 // Clean up these tests below!
-   // Make them use describes
    // Stop calling functions - stop loading arrays.  Do it the way you want to.  Don't forget these blocks need to be copied
    // See if you can move that out of main
    // Probably get the describe into the actual error message
    // Kill block duplication - maybe with an it.
+   // Outputter needs to be a class member.
   
 
 void testGameCallsUpdateOnControllerWithDelta()
@@ -167,13 +166,7 @@ void testGameCallsUpdateOnController()
   
   if (controller.updated != YES)
   {
-    NSException *exception = [NSException exceptionWithName:@"Test Failed"
-                                                     reason:@"Controller expected to be updated and wasn't"
-                                                   userInfo:[NSDictionary dictionaryWithObjectsAndKeys: @"className", @"TestClass",
-                                                             @"name", @"GameCallsUpdateOnController", 
-                                                             @"line", [NSNumber numberWithInt:__LINE__], 
-                                                             @"file", [NSString stringWithUTF8String:__FILE__], nil]];
-    [exception raise];
+    FAIL(@"Controller needed to be updated and wasn't");
   }    
   
   [game release];
@@ -203,132 +196,33 @@ void testFail()
   int errors = 0;
   int successes = 0;
   
-  @try 
-  {
-    testGameCallsUpdateOnController();
-    successes++;
-  }
-  @catch (NSException * e) 
-  {
-    fprintf(stderr, "%s:%ld: error: -[%s %s] : %s\n",
-            [[[e userInfo] objectForKey:@"file"] UTF8String],
-            [[[e userInfo] objectForKey:@"line"] longValue],
-            [[[e userInfo] objectForKey:@"className"] UTF8String],
-            [[[e userInfo] objectForKey:@"name"] UTF8String],
-            [[e reason] UTF8String]);  
-    errors++;
-  }
+  void (^testGameCallsUpdateOnControllerBlock) (void) = [^(void) {testGameCallsUpdateOnController();} copy];
+  void (^testGameCallsUpdateOnControllerWithDeltaBlock) (void) = [^(void) {testGameCallsUpdateOnControllerWithDelta();} copy];
+  
+  OCSpecDescription *gameDescription = [[[OCSpecDescription alloc] init] autorelease];
+  NSArray *examplesForGame = [NSArray arrayWithObjects:testGameCallsUpdateOnControllerBlock, testGameCallsUpdateOnControllerWithDeltaBlock, nil];
+  [gameDescription describe:@"Game Controller" onArrayOfExamples:examplesForGame];
 
-  @try 
-  {
-    testGameCallsUpdateOnControllerWithDelta();
-    successes++;
-  }
-  @catch (NSException * e) 
-  {
-    fprintf(stderr, "%s:%ld: error: -[%s %s] : %s\n",
-            [[[e userInfo] objectForKey:@"file"] UTF8String],
-            [[[e userInfo] objectForKey:@"line"] longValue],
-            [[[e userInfo] objectForKey:@"className"] UTF8String],
-            [[[e userInfo] objectForKey:@"name"] UTF8String],
-            [[e reason] UTF8String]);  
-    errors++;
-  }
+  [testGameCallsUpdateOnControllerBlock release];
+  [testGameCallsUpdateOnControllerWithDeltaBlock release];
   
-  @try 
-  {
-    testDescribeWithNoErrors();
-    successes++;
-  }
-  @catch (NSException * e) 
-  {
-    fprintf(stderr, "%s:%ld: error: -[%s %s] : %s\n",
-            [[[e userInfo] objectForKey:@"file"] UTF8String],
-            [[[e userInfo] objectForKey:@"line"] longValue],
-            [[[e userInfo] objectForKey:@"className"] UTF8String],
-            [[[e userInfo] objectForKey:@"name"] UTF8String],
-            [[e reason] UTF8String]);  
-    errors++;
-  }
+  errors = gameDescription.errors;
+  successes = gameDescription.successes;
   
-  @try 
-  {
-    testDescribeWithOneError();
-    successes++;
-  }
-  @catch (NSException * e) 
-  {
-    fprintf(stderr, "%s:%ld: error: -[%s %s] : %s\n",
-            [[[e userInfo] objectForKey:@"file"] UTF8String],
-            [[[e userInfo] objectForKey:@"line"] longValue],
-            [[[e userInfo] objectForKey:@"className"] UTF8String],
-            [[[e userInfo] objectForKey:@"name"] UTF8String],
-            [[e reason] UTF8String]);  
-    errors++;
-  }
+  void (^testDescribeWithNoErrorsBlock) (void) = [[^(void) {testDescribeWithNoErrors();} copy] autorelease];
+  void (^testDescribeWithOneErrorBlock) (void) = [[^(void) {testDescribeWithOneError();} copy] autorelease];
+  void (^testFailBlock) (void) = [[^(void) {testFail();} copy] autorelease];
+  void (^testDescribeWithErrorWritesExceptionToOutputterBlock) (void) = [[^(void) {testDescribeWithErrorWritesExceptionToOutputter();} copy] autorelease];
+  void (^testDefaultOutputterIsStandardErrorBlock) (void) = [[^(void) {testDefaultOutputterIsStandardError();} copy ] autorelease];
+  void (^testDescribeWorksWithMultipleTestsBlock) (void) = [[^(void) {testDescribeWorksWithMultipleTests(); } copy ] autorelease ];
   
-  @try 
-  {
-    testFail();
-    successes++;
-  }
-  @catch (NSException * e) 
-  {
-    fprintf(stderr, "%s:%ld: error: -[%s %s] : %s\n",
-            [[[e userInfo] objectForKey:@"file"] UTF8String],
-            [[[e userInfo] objectForKey:@"line"] longValue],
-            [[[e userInfo] objectForKey:@"className"] UTF8String],
-            [[[e userInfo] objectForKey:@"name"] UTF8String],
-            [[e reason] UTF8String]);  
-    errors++;
-  }
+  OCSpecDescription *testsDescription = [[[OCSpecDescription alloc] init] autorelease];
+  NSArray *examplesForTests = [NSArray arrayWithObjects:testDescribeWithNoErrorsBlock, testDescribeWithOneErrorBlock, testFailBlock, testDescribeWithErrorWritesExceptionToOutputterBlock, testDefaultOutputterIsStandardErrorBlock, testDescribeWorksWithMultipleTestsBlock, nil];
+  [testsDescription describe:@"Unit Tests" onArrayOfExamples:examplesForTests];
   
-  @try 
-  {
-    testDescribeWithErrorWritesExceptionToOutputter();
-  }
-  @catch (NSException * e) 
-  {
-    fprintf(stderr, "%s:%ld: error: -[%s %s] : %s\n",
-            [[[e userInfo] objectForKey:@"file"] UTF8String],
-            [[[e userInfo] objectForKey:@"line"] longValue],
-            [[[e userInfo] objectForKey:@"className"] UTF8String],
-            [[[e userInfo] objectForKey:@"name"] UTF8String],
-            [[e reason] UTF8String]);  
-    errors++;
-  }
-  
-  @try 
-  {
-    testDefaultOutputterIsStandardError();
-  }
-  @catch (NSException * e) 
-  {
-    fprintf(stderr, "%s:%ld: error: -[%s %s] : %s\n",
-            [[[e userInfo] objectForKey:@"file"] UTF8String],
-            [[[e userInfo] objectForKey:@"line"] longValue],
-            [[[e userInfo] objectForKey:@"className"] UTF8String],
-            [[[e userInfo] objectForKey:@"name"] UTF8String],
-            [[e reason] UTF8String]);  
-    errors++;
-  }
-  
-  @try 
-  {
-    testDescribeWorksWithMultipleTests();
-  }
-  @catch (NSException * e) 
-  {
-    fprintf(stderr, "%s:%ld: error: -[%s %s] : %s\n",
-            [[[e userInfo] objectForKey:@"file"] UTF8String],
-            [[[e userInfo] objectForKey:@"line"] longValue],
-            [[[e userInfo] objectForKey:@"className"] UTF8String],
-            [[[e userInfo] objectForKey:@"name"] UTF8String],
-            [[e reason] UTF8String]);  
-    errors++;
-  }
-  
-  fflush(stderr);
+  errors += testsDescription.errors;
+  successes += testsDescription.successes;
+
   NSLog(@"Tests ran with %d passing tests and %d failing tests", successes, errors);
   
   // You should terminate with the number of failures
