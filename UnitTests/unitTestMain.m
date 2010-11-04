@@ -3,6 +3,7 @@
 #import "GameController.h"
 #import "OCSpecFail.h"
 #import "OCSpecDescription.h"
+#import "OCSpecExample.h"
 
 @interface MockGameController : NSObject<GameController>
 {
@@ -222,6 +223,19 @@ void testFail()
   
   errors += testsDescription.errors;
   successes += testsDescription.successes;
+  
+  OCSpecExample *example = IT(@"Should Fail One Test", ^{
+    FAIL(@"You have failed");
+  });
+  
+  [example run];
+  
+  if (example.failed != YES) 
+  {
+    FAIL(@"That example should have failed.  It didn't");
+    errors++;
+  } 
+    
 
   NSLog(@"Tests ran with %d passing tests and %d failing tests", successes, errors);
   
