@@ -234,8 +234,34 @@ void testFail()
   {
     FAIL(@"That example should have failed.  It didn't");
     errors++;
-  } 
-    
+  }
+  else 
+  {
+    successes++;
+  }
+  
+  [example release];
+
+  example = IT(@"Should Pass An empty Test", ^{});
+  
+  [example run];
+  
+  if (example.failed != NO) 
+  {
+    @try {
+      FAIL(@"That example should not have failed.  It did");
+    }
+    @catch (NSException * e) {
+      errors++;
+    }
+  }
+  else 
+  {
+    successes++;
+  }
+  
+  [example release];
+  
 
   NSLog(@"Tests ran with %d passing tests and %d failing tests", successes, errors);
   
