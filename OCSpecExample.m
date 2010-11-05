@@ -2,13 +2,13 @@
 
 @implementation OCSpecExample
 
-@synthesize failed;
+@synthesize failed, outputter;
 
 -(id) init
 {
   if (self = [super init]) 
   {
-    failed = YES;
+    failed = NO;
     outputter = [NSFileHandle fileHandleWithStandardError];
   }
   return self;
@@ -20,6 +20,7 @@
   {
     failed = NO;
     itsExample = [example copy];
+    outputter = [NSFileHandle fileHandleWithStandardError];
   }
   return self;
 }
@@ -33,6 +34,8 @@
   }
   @catch (NSException * e)
   {
+    NSLog(@"Catching Exception %@", [e reason]);
+    NSLog(@"Outputter is %@", outputter);
     NSString *errorString = [NSString stringWithFormat:@"%s:%ld: error: %@",
                              [[[e userInfo] objectForKey:@"file"] UTF8String],
                              [[[e userInfo] objectForKey:@"line"] longValue],
@@ -44,6 +47,6 @@
   }
 }
 
-// Dealloc the block!
+// Dealloc the block, and the outputter.
 
 @end

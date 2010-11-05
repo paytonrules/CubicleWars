@@ -14,6 +14,7 @@
 		075CA7CF12765AB300BAE36E /* OCSpecDescription.m in Sources */ = {isa = PBXBuildFile; fileRef = 075CA7CE12765AB300BAE36E /* OCSpecDescription.m */; };
 		0766C4AC1274CC04004BBD75 /* OCSpecFail.m in Sources */ = {isa = PBXBuildFile; fileRef = 0766C4AB1274CC04004BBD75 /* OCSpecFail.m */; };
 		07C2DD9F12836F81009E03F7 /* OCSpecExample.m in Sources */ = {isa = PBXBuildFile; fileRef = 07C2DD9E12836F81009E03F7 /* OCSpecExample.m */; };
+		07C2DDF5128442EA009E03F7 /* MockExample.m in Sources */ = {isa = PBXBuildFile; fileRef = 07C2DDF4128442EA009E03F7 /* MockExample.m */; };
 		1D3623260D0F684500981E51 /* CubicleWarsAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D3623250D0F684500981E51 /* CubicleWarsAppDelegate.m */; };
 		1D60589B0D05DD56006BFB54 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
@@ -41,6 +42,9 @@
 		0766C4AB1274CC04004BBD75 /* OCSpecFail.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCSpecFail.m; sourceTree = "<group>"; };
 		07C2DD9D12836F81009E03F7 /* OCSpecExample.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCSpecExample.h; sourceTree = "<group>"; };
 		07C2DD9E12836F81009E03F7 /* OCSpecExample.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCSpecExample.m; sourceTree = "<group>"; };
+		07C2DDF3128442EA009E03F7 /* MockExample.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MockExample.h; sourceTree = "<group>"; };
+		07C2DDF4128442EA009E03F7 /* MockExample.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MockExample.m; sourceTree = "<group>"; };
+		07C2DE3712844CDE009E03F7 /* Example.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Example.h; sourceTree = "<group>"; };
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D3623240D0F684500981E51 /* CubicleWarsAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CubicleWarsAppDelegate.h; sourceTree = "<group>"; };
 		1D3623250D0F684500981E51 /* CubicleWarsAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CubicleWarsAppDelegate.m; sourceTree = "<group>"; };
@@ -96,6 +100,8 @@
 		0766C4AD1274CC0D004BBD75 /* TestFramework */ = {
 			isa = PBXGroup;
 			children = (
+				07C2DE3512844C33009E03F7 /* Protocols */,
+				07C2DDF0128442DD009E03F7 /* mocks */,
 				07550BAA126A2C5400C4A7FF /* unitTestMain.m */,
 				075CA7CD12765AB300BAE36E /* OCSpecDescription.h */,
 				075CA7CE12765AB300BAE36E /* OCSpecDescription.m */,
@@ -105,6 +111,31 @@
 				07C2DD9E12836F81009E03F7 /* OCSpecExample.m */,
 			);
 			name = TestFramework;
+			sourceTree = "<group>";
+		};
+		07C2DDF0128442DD009E03F7 /* mocks */ = {
+			isa = PBXGroup;
+			children = (
+				07C2DE3612844C43009E03F7 /* New Group */,
+				07C2DDF3128442EA009E03F7 /* MockExample.h */,
+				07C2DDF4128442EA009E03F7 /* MockExample.m */,
+			);
+			name = mocks;
+			sourceTree = "<group>";
+		};
+		07C2DE3512844C33009E03F7 /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				07C2DE3712844CDE009E03F7 /* Example.h */,
+			);
+			name = Protocols;
+			sourceTree = "<group>";
+		};
+		07C2DE3612844C43009E03F7 /* New Group */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = "New Group";
 			sourceTree = "<group>";
 		};
 		080E96DDFE201D6D7F000001 /* Classes */ = {
@@ -291,6 +322,7 @@
 				0766C4AC1274CC04004BBD75 /* OCSpecFail.m in Sources */,
 				075CA7CF12765AB300BAE36E /* OCSpecDescription.m in Sources */,
 				07C2DD9F12836F81009E03F7 /* OCSpecExample.m in Sources */,
+				07C2DDF5128442EA009E03F7 /* MockExample.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

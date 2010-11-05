@@ -1,4 +1,5 @@
 #import "OCSpecDescription.h"
+#import "OCSpecExample.h"
 
 @implementation OCSpecDescription
 
@@ -17,22 +18,13 @@
 {
   [examples enumerateObjectsUsingBlock: ^(id obj, NSUInteger idx, BOOL *stop)
   {
-    @try
-    {
-      void (^test) (void) = obj;
-      test();
-      self.successes++;
-    }
-    @catch (NSException * e)
-    {
-      NSString *errorString = [NSString stringWithFormat:@"%s:%ld: error: %@",
-                               [[[e userInfo] objectForKey:@"file"] UTF8String],
-                               [[[e userInfo] objectForKey:@"line"] longValue],
-                               [e reason]];
-
-      [outputter writeData:[errorString dataUsingEncoding:NSUTF8StringEncoding]];
-
+    OCSpecExample *example = (OCSpecExample *) obj;
+    [example run];
+    if (example.failed)
       self.errors++;
+    else 
+    {
+      self.successes++;
     }
   }];
 }
