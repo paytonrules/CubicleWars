@@ -18,9 +18,8 @@
 {
   if (self = [super init])
   {
-    failed = NO;
+    [self init];
     itsExample = [example copy];
-    outputter = [NSFileHandle fileHandleWithStandardError];
   }
   return self;
 }
@@ -34,8 +33,6 @@
   }
   @catch (NSException * e)
   {
-    NSLog(@"Catching Exception %@", [e reason]);
-    NSLog(@"Outputter is %@", outputter);
     NSString *errorString = [NSString stringWithFormat:@"%s:%ld: error: %@",
                              [[[e userInfo] objectForKey:@"file"] UTF8String],
                              [[[e userInfo] objectForKey:@"line"] longValue],

@@ -232,15 +232,27 @@ void testFail()
   }
 };
 
-
+void testDescribeMacro()
+{
+  OCSpecDescription *description = DESCRIBE(@"A thing", 
+                                            IT(@"Should Succeed", ^{}),
+                                            IT(@"Should Fail", ^{ FAIL(@"Monkey"); } ));
+  
+  [description describe];
+  
+  if (description.errors != 1)
+  {
+    FAIL(@"Should have had just one error");
+  }
+}
+  
 @implementation TestClass
-
-
 
 -(void) applicationDidFinishLaunching:(UIApplication *) app
 {
   int errors = 0;
   int successes = 0;
+  
   
   OCSpecExample *exampleGameCallsUpdateOnController = [[[OCSpecExample alloc] initWithBlock: ^{
     testGameCallsUpdateOnController();
@@ -292,6 +304,10 @@ void testFail()
   OCSpecExample *exampleTestExceptionFormat = [[[OCSpecExample alloc] initWithBlock:^{
     testExceptionFormat();
   } ] autorelease];
+  
+  OCSpecExample *exampleUsingDescribeMacro = [[[OCSpecExample alloc] initWithBlock:^{
+    testDescribeMacro();
+  } ] autorelease];
 
   OCSpecDescription *testsDescription = [[[OCSpecDescription alloc] init] autorelease];
   NSArray *examplesForTests = [NSArray arrayWithObjects:exampleDescribeWithNoErrors, 
@@ -303,6 +319,7 @@ void testFail()
                                                         exampleDescribeWorksWithMultipleSuccesses,
                                                         exampleExampleWritesToOutputter,
                                                         exampleTestExceptionFormat,
+                                                        exampleUsingDescribeMacro,
                                                         nil];
   [testsDescription describe:@"Unit Tests" onArrayOfExamples:examplesForTests];
   

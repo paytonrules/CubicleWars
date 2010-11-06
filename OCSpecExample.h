@@ -15,4 +15,4 @@
 @end
 
 
-#define IT(description, example) [[OCSpecExample alloc] initWithBlock:example];
+#define IT(description, example) [[OCSpecExample alloc] initWithBlock:example]

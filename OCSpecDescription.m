@@ -14,13 +14,31 @@
   return self;
 }
 
+-(id) initWithName:(NSString *) name examples:(NSArray *)examples
+{
+  if (self = [super init])
+  {
+    [super init];
+    itsExamples = examples;
+    itsName = name;
+  }
+  return self;
+}
+
 -(void) describe:(NSString *)name onArrayOfExamples:(NSArray *)examples
 {
-  [examples enumerateObjectsUsingBlock: ^(id obj, NSUInteger idx, BOOL *stop)
+  itsExamples = examples;
+  itsName = name;
+  [self describe];
+}
+
+-(void) describe
+{
+  [itsExamples enumerateObjectsUsingBlock: ^(id obj, NSUInteger idx, BOOL *stop)
   {
     OCSpecExample *example = (OCSpecExample *) obj;
     example.outputter = self.outputter;
-    
+     
     [example run];
     if (example.failed)
     {

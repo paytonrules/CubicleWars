@@ -92,6 +92,7 @@
 		07550BE7126A64E300C4A7FF /* Protocols */ = {
 			isa = PBXGroup;
 			children = (
+				080E96DDFE201D6D7F000001 /* Classes */,
 				07550BEA126A64F100C4A7FF /* GameController.h */,
 			);
 			name = Protocols;
@@ -179,7 +180,6 @@
 			children = (
 				0766C4AD1274CC0D004BBD75 /* TestFramework */,
 				07550BE7126A64E300C4A7FF /* Protocols */,
-				080E96DDFE201D6D7F000001 /* Classes */,
 				2514C27610084DB600A42282 /* Shaders */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
