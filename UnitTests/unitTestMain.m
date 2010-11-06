@@ -172,7 +172,7 @@ void testDescribeWorksWithMultipleTests()
   }
 }
 
-void testDescribeWorksWithMutlipleSuccesses()
+void testDescribeWorksWithMultipleSuccesses()
 {
   OCSpecDescription *description = [[[OCSpecDescription alloc] init] autorelease];
   description.outputter = [NSFileHandle fileHandleWithNullDevice];
@@ -189,12 +189,6 @@ void testDescribeWorksWithMutlipleSuccesses()
     FAIL(@"Should have had two successes, didn't");
   }
 }
-
-// Clean up these tests below!
-   // DESCRIBE macro
-   // See if you can move that out of main
-   // Probably get the describe into the actual error message
-   // Use those strings in the examples and in the describe
   
 
 void testGameCallsUpdateOnControllerWithDelta()
@@ -248,123 +242,101 @@ void testDescribeMacro()
   
 @implementation TestClass
 
+
+// Clean up these tests below!
+// See if you can move that out of main
+// Probably get the describe into the actual error message
+// Use those strings in the examples and in the describe
 -(void) applicationDidFinishLaunching:(UIApplication *) app
 {
   int errors = 0;
   int successes = 0;
   
+  OCSpecDescription *gameDescription = DESCRIBE(@"Description that is not used - Game controller Tests",
+    
+    IT(@"Calls Update on the Game Controller", ^{
+      testGameCallsUpdateOnController();
+    }),
+    
+    IT(@"Calls Update on the Game Controller with delta", ^{
+      testGameCallsUpdateOnControllerWithDelta();
+    })
+  );
   
-  OCSpecExample *exampleGameCallsUpdateOnController = [[[OCSpecExample alloc] initWithBlock: ^{
-    testGameCallsUpdateOnController();
-  } ] autorelease];
-  
-  OCSpecExample *exampleGameCallsUpdateOnControllerWithDelta = [[[OCSpecExample alloc] initWithBlock: ^{
-    testGameCallsUpdateOnControllerWithDelta();
-  } ] autorelease];
-  
-  OCSpecDescription *gameDescription = [[[OCSpecDescription alloc] init] autorelease];
-  NSArray *examplesForGame = [NSArray arrayWithObjects:exampleGameCallsUpdateOnController, exampleGameCallsUpdateOnControllerWithDelta, nil];
-  [gameDescription describe:@"Game Controller" onArrayOfExamples:examplesForGame];
+  OCSpecDescription *testDescription = DESCRIBE(@"Unit tests for my test 'framework'", 
+    
+    IT(@"Has an example without errors", ^{
+      testDescribeWithNoErrors();
+    }),
+    
+    IT(@"Has an example with one error", ^{
+      testDescribeWithOneError();
+    }),
+                                                
+    IT(@"Has a faliure assertion", ^{
+      testFail();
+    }),
 
-  errors = gameDescription.errors;
-  successes = gameDescription.successes;
-  
-  OCSpecExample *exampleDescribeWithNoErrors = [[[OCSpecExample alloc] initWithBlock: ^{
-    testDescribeWithNoErrors();
-  } ] autorelease];
-  
-  OCSpecExample *exampleDescribeWithOneError = [[[OCSpecExample alloc] initWithBlock: ^{
-    testDescribeWithOneError();
-  } ] autorelease];
-  
-  OCSpecExample *exampleFail = [[[OCSpecExample alloc] initWithBlock: ^{
-    testFail();
-  } ] autorelease];
-  
-  OCSpecExample *exampleDescribeWithErrorWritesExceptionToOutputter = [[[OCSpecExample alloc] initWithBlock:^{
-    testDescribeWithErrorWritesExceptionToOutputter();
-  } ] autorelease];
-  
-  OCSpecExample *exampleDefaultOutputterIsStandardError = [[[OCSpecExample alloc] initWithBlock:^{
-    testDefaultOutputterIsStandardError();
-  } ] autorelease];
+    IT(@"Describe write the exemption to the outputter", ^{
+      testDescribeWithErrorWritesExceptionToOutputter();
+    }),
 
-  OCSpecExample *exampleDescribeWorksWithMultipleTests = [[[OCSpecExample alloc] initWithBlock:^{
-    testDescribeWorksWithMultipleTests();
-  } ] autorelease];
-  
-  OCSpecExample *exampleDescribeWorksWithMultipleSuccesses = [[[OCSpecExample alloc] initWithBlock:^{
-    testDescribeWorksWithMutlipleSuccesses();
-  } ] autorelease];
-  
-  OCSpecExample *exampleExampleWritesToOutputter = [[[OCSpecExample alloc] initWithBlock:^{
-    testExampleWritesExceptionToOutputter();
-  } ] autorelease];
-  
-  OCSpecExample *exampleTestExceptionFormat = [[[OCSpecExample alloc] initWithBlock:^{
-    testExceptionFormat();
-  } ] autorelease];
-  
-  OCSpecExample *exampleUsingDescribeMacro = [[[OCSpecExample alloc] initWithBlock:^{
-    testDescribeMacro();
-  } ] autorelease];
+    IT(@"Describes default ouputter is standard error", ^{
+      testDefaultOutputterIsStandardError();
+    }),
 
-  OCSpecDescription *testsDescription = [[[OCSpecDescription alloc] init] autorelease];
-  NSArray *examplesForTests = [NSArray arrayWithObjects:exampleDescribeWithNoErrors, 
-                                                        exampleDescribeWithOneError, 
-                                                        exampleFail, 
-                                                        exampleDescribeWithErrorWritesExceptionToOutputter, 
-                                                        exampleDefaultOutputterIsStandardError, 
-                                                        exampleDescribeWorksWithMultipleTests, 
-                                                        exampleDescribeWorksWithMultipleSuccesses,
-                                                        exampleExampleWritesToOutputter,
-                                                        exampleTestExceptionFormat,
-                                                        exampleUsingDescribeMacro,
-                                                        nil];
-  [testsDescription describe:@"Unit Tests" onArrayOfExamples:examplesForTests];
-  
-  errors += testsDescription.errors;
-  successes += testsDescription.successes;
-  
-  OCSpecExample *example = IT(@"Should Fail One Test", ^{
-    FAIL(@"You have failed");
-  });
-  example.outputter = [NSFileHandle fileHandleWithNullDevice];
-  
-  [example run];
-  
-  if (example.failed != YES) 
-  {
-    FAIL(@"That example should have failed.  It didn't");
-    errors++;
-  }
-  else 
-  {
-    successes++;
-  }
-  
-  [example release];
+    IT(@"Describe multiple examples", ^{
+      testDescribeWorksWithMultipleTests();
+    }),
+    
+    IT(@"Describes multipole successes", ^{
+      testDescribeWorksWithMultipleSuccesses();
+    }),
 
-  example = IT(@"Should Pass An empty Test", ^{});
+    IT(@"Examples write their exceptions to the outputter", ^{
+      testExampleWritesExceptionToOutputter();
+    }),
+
+    IT(@"Examples write their output in a XCode friendly format", ^{
+      testExceptionFormat();
+    }),
+
+    IT(@"Describe can use a macro", ^{
+      testDescribeMacro();
+    })
+  );
   
-  [example run];
+  OCSpecDescription *itDescription = DESCRIBE(@"OCSpecExample", 
+    IT(@"Should Fail One Test", ^{
+      BOOL caughtFailure = NO;
+      @try 
+      {
+        FAIL(@"You have failed");
+      }
+      @catch (NSException * e)
+      {
+        caughtFailure = YES;
+      }
+      if (caughtFailure != YES) 
+      {
+        FAIL(@"This should have raised a failure");
+      }
+    }),
+                                              
+    IT(@"Should Pass An empty Test", ^{})
+  );
   
-  if (example.failed != NO) 
-  {
-    @try {
-      FAIL(@"That example should not have failed.  It did");
-    }
-    @catch (NSException * e) {
-      errors++;
-    }
-  }
-  else 
-  {
-    successes++;
-  }
+  gameDescription.outputter = [NSFileHandle fileHandleWithStandardError];
+  [gameDescription describe];
   
-  [example release];
+  itDescription.outputter = [NSFileHandle fileHandleWithStandardError];
+  [itDescription describe];
+
+  testDescription.outputter = [NSFileHandle fileHandleWithStandardError];
+  [testDescription describe];
   
+  errors = gameDescription.errors + testDescription.errors + itDescription.errors;
+  successes = gameDescription.successes + testDescription.successes + itDescription.successes;
 
   NSLog(@"Tests ran with %d passing tests and %d failing tests", successes, errors);
   

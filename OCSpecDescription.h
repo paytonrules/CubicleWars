@@ -26,4 +26,4 @@
 #define IDARRAY(...) ((id[]){ __VA_ARGS__ })
 #define IDCOUNT(...) (sizeof(IDARRAY(__VA_ARGS__)) / sizeof(id))
 
-#define DESCRIBE(description, ...) [[OCSpecDescription alloc] initWithName: description examples:ARRAY(__VA_ARGS__) ]
+#define DESCRIBE(description, ...) [[[OCSpecDescription alloc] initWithName: description examples:ARRAY(__VA_ARGS__) ] autorelease];
