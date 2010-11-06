@@ -19,6 +19,8 @@
   [examples enumerateObjectsUsingBlock: ^(id obj, NSUInteger idx, BOOL *stop)
   {
     OCSpecExample *example = (OCSpecExample *) obj;
+    example.outputter = self.outputter;
+    
     [example run];
     if (example.failed)
     {
@@ -30,5 +32,7 @@
     }
   }];
 }
+
+// TEST DEALLOC
 
 @end

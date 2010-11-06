@@ -113,13 +113,12 @@ void testExceptionFormat()
   [fileManager removeItemAtPath:outputterPath error:NULL];
 }
 
-// Test the format of the exception here - not where its written
 // You are gonna need a setup/teardown sooner rather than later
 // before/after
 
 void testDescribeWithErrorWritesExceptionToOutputter()
 {
-/*  NSString *outputterPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"test.txt"];
+  NSString *outputterPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"test.txt"];
   NSFileManager *fileManager = [[[NSFileManager alloc] init] autorelease];
   [fileManager createFileAtPath:outputterPath contents:nil attributes:nil];
   NSFileHandle *outputter = [NSFileHandle fileHandleForWritingAtPath:outputterPath];
@@ -127,84 +126,72 @@ void testDescribeWithErrorWritesExceptionToOutputter()
   OCSpecDescription *description = [[[OCSpecDescription alloc] init] autorelease];
   description.outputter = outputter;
   
-  int outputLine = __LINE__ + 1;
-  void (^test) (void) = [^(void) {FAIL(@"Fail");} copy];
-  NSArray *tests = [NSArray arrayWithObject:test];
+  OCSpecExample *example = [[[OCSpecExample alloc] initWithBlock:^{ FAIL(@"FAIL"); }] autorelease];
+  NSArray *tests = [NSArray arrayWithObject: example];
   
   [description describe:@"It Should Do Something" onArrayOfExamples: tests];
-  
-  Block_release(test);
   
   NSFileHandle *inputFile = [NSFileHandle fileHandleForReadingAtPath:outputterPath];
   
   NSString *outputException = [[[NSString alloc] initWithData:[inputFile readDataToEndOfFile] 
                                                 encoding:NSUTF8StringEncoding] autorelease];
   
-  NSString *errorFormat = [NSString stringWithFormat:@"%s:%ld: error: %@",
-                           __FILE__,
-                           outputLine,
-                           @"Fail"];
-  
-  if ([outputException compare:errorFormat] != 0)
+  if (outputException.length == 0)
   {
-    NSString *failMessage = [NSString stringWithFormat:@"%@ expected, received %@", errorFormat, outputException];
-    FAIL(failMessage);
-  }*/
+    FAIL(@"An exception should have been written to the outputter - but wasn't.");
+  }
+  
+  [fileManager removeItemAtPath:outputterPath error:NULL];
 }
 
 void testDefaultOutputterIsStandardError()
 {
-  /*
   OCSpecDescription *description = [[[OCSpecDescription alloc] init] autorelease];
   
   if (description.outputter != [NSFileHandle fileHandleWithStandardError])
-    FAIL(@"Should have had standard error.  Didn't");*/
+  {
+    FAIL(@"Should have had standard error.  Didn't");
+  }
 }
 
 void testDescribeWorksWithMultipleTests()
-{/*
+{
   OCSpecDescription *description = [[[OCSpecDescription alloc] init] autorelease];
   description.outputter = [NSFileHandle fileHandleWithNullDevice];
   
-  void (^testOne) (void) = [^(void) {FAIL(@"Fail One");} copy];
-  void (^testTwo) (void) = [^(void) {FAIL(@"Fail Two");} copy];
+  OCSpecExample *exampleOne = [[[OCSpecExample alloc] initWithBlock: ^{ FAIL(@"Fail One"); }] autorelease];
+  OCSpecExample *exampleTwo = [[[OCSpecExample alloc] initWithBlock: ^{ FAIL(@"Fail Two"); }] autorelease];
   
-  NSArray *tests = [NSArray arrayWithObjects:testOne, testTwo, nil];
-  
-  [testOne release];
-  [testTwo release];
+  NSArray *tests = [NSArray arrayWithObjects:exampleOne, exampleTwo, nil];
   
   [description describe:@"It Should Do Something" onArrayOfExamples: tests];
   
   if (description.errors != 2)
   {
     FAIL(@"Should have had two errors, didn't");
-  }*/
+  }
 }
 
 void testDescribeWorksWithMutlipleSuccesses()
-{/*
+{
   OCSpecDescription *description = [[[OCSpecDescription alloc] init] autorelease];
   description.outputter = [NSFileHandle fileHandleWithNullDevice];
   
-  void (^testOne) (void) = [^(void) {} copy];
-  void (^testTwo) (void) = [^(void) {} copy];
+  OCSpecExample *exampleOne = [[[OCSpecExample alloc] initWithBlock: ^{ }] autorelease];
+  OCSpecExample *exampleTwo = [[[OCSpecExample alloc] initWithBlock: ^{ }] autorelease];
   
-  NSArray *tests = [NSArray arrayWithObjects:testOne, testTwo, nil];
-  
-  [testOne release];
-  [testTwo release];
+  NSArray *tests = [NSArray arrayWithObjects:exampleOne, exampleTwo, nil];
   
   [description describe:@"It Should Do Something" onArrayOfExamples: tests];
   
   if (description.successes != 2)
   {
     FAIL(@"Should have had two successes, didn't");
-  }*/
+  }
 }
 
 // Clean up these tests below!
-   // Stop calling functions - stop loading arrays.  Do it the way you want to.  Don't forget these blocks need to be copied
+   // DESCRIBE macro
    // See if you can move that out of main
    // Probably get the describe into the actual error message
    // Use those strings in the examples and in the describe
