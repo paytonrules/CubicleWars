@@ -21,7 +21,9 @@
     OCSpecExample *example = (OCSpecExample *) obj;
     [example run];
     if (example.failed)
+    {
       self.errors++;
+    }
     else 
     {
       self.successes++;
