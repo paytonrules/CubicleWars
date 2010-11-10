@@ -1,3 +1,4 @@
+#include <objc/runtime.h>
 #import <UIKit/UIKit.h>
 #import "CubicleWars.h"
 #import "GameController.h"
@@ -5,6 +6,8 @@
 #import "OCSpecDescription.h"
 #import "OCSpecExample.h"
 #import "MockExample.h"
+#import "DescriptionRunner.h"
+#import "OCSpecDescriptionRunner.h"
 
 @interface MockGameController : NSObject<GameController>
 {
@@ -30,6 +33,24 @@
 }
 
 @end
+
+static BOOL ranDescription = NO;
+@interface TestDescriptionRunner : NSObject<DescriptionRunner>
+{
+}
+
+@end
+
+@implementation TestDescriptionRunner
+
++(void) run
+{
+  ranDescription = YES;
+}
+
+@end
+
+
 
 void testDescribeWithNoErrors()
 {
@@ -244,9 +265,11 @@ void testDescribeMacro()
 
 
 // Clean up these tests below!
-// See if you can move that out of main
-// Probably get the describe into the actual error message
+// See if you can move that out of main (Test Runner)
 // Use those strings in the examples and in the describe
+// Test the counting.
+// Memory!
+// setup/teardown
 -(void) applicationDidFinishLaunching:(UIApplication *) app
 {
   int errors = 0;
@@ -326,17 +349,43 @@ void testDescribeMacro()
     IT(@"Should Pass An empty Test", ^{})
   );
   
+  OCSpecDescription *runnerDescription = DESCRIBE(@"OCSpecDescriptionRunner",
+    IT(@"Should call the run method on the TestDescriptionRunner defined above", ^{
+      OCSpecDescriptionRunner *runner = [[[OCSpecDescriptionRunner alloc] init] autorelease];
+    
+      [runner runAllDescriptions];
+      
+      if (ranDescription == NO)
+        FAIL(@"Should have ran the static description, didn't");
+    }),
+    
+    IT(@"Should call the run method on all classes that conform to the description protocol", ^{      
+      OCSpecDescriptionRunner *runner = [[[OCSpecDescriptionRunner alloc] init] autorelease];
+      Class myExampleStaticDescription = objc_allocateClassPair([NSObject class], "myExampleStaticDescription", 0);
+      
+
+      
+      [runner runAllDescriptions];
+
+    })
+    
+  );
+      
+    
   gameDescription.outputter = [NSFileHandle fileHandleWithStandardError];
   [gameDescription describe];
   
-  itDescription.outputter = [NSFileHandle fileHandleWithStandardError];
-  [itDescription describe];
-
   testDescription.outputter = [NSFileHandle fileHandleWithStandardError];
   [testDescription describe];
   
-  errors = gameDescription.errors + testDescription.errors + itDescription.errors;
-  successes = gameDescription.successes + testDescription.successes + itDescription.successes;
+  itDescription.outputter = [NSFileHandle fileHandleWithStandardError];
+  [itDescription describe];
+  
+  runnerDescription.outputter = [NSFileHandle fileHandleWithStandardError];
+  [runnerDescription describe];
+  
+  errors = gameDescription.errors + testDescription.errors + itDescription.errors + runnerDescription.errors;
+  successes = gameDescription.successes + testDescription.successes + itDescription.successes + runnerDescription.successes;
 
   NSLog(@"Tests ran with %d passing tests and %d failing tests", successes, errors);
   
