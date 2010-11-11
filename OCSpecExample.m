@@ -33,7 +33,7 @@
   }
   @catch (NSException * e)
   {
-    NSString *errorString = [NSString stringWithFormat:@"%s:%ld: error: %@",
+    NSString *errorString = [NSString stringWithFormat:@"%s:%ld: error: %@\n",
                              [[[e userInfo] objectForKey:@"file"] UTF8String],
                              [[[e userInfo] objectForKey:@"line"] longValue],
                              [e reason]];

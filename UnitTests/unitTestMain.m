@@ -119,7 +119,7 @@ void testExceptionFormat()
   NSString *outputException = [[[NSString alloc] initWithData:[inputFile readDataToEndOfFile] 
                                                      encoding:NSUTF8StringEncoding] autorelease];
 
-  NSString *errorFormat = [NSString stringWithFormat:@"%s:%ld: error: %@",
+  NSString *errorFormat = [NSString stringWithFormat:@"%s:%ld: error: %@\n",
            __FILE__,
            outputLine,
            @"FAIL"];
@@ -260,6 +260,12 @@ void testDescribeMacro()
     FAIL(@"Should have had just one error");
   }
 }
+
+static BOOL ranMeToo;
+static void run()
+{
+  ranMeToo = YES;
+}
   
 @implementation TestClass
 
@@ -362,11 +368,19 @@ void testDescribeMacro()
     IT(@"Should call the run method on all classes that conform to the description protocol", ^{      
       OCSpecDescriptionRunner *runner = [[[OCSpecDescriptionRunner alloc] init] autorelease];
       Class myExampleStaticDescription = objc_allocateClassPair([NSObject class], "myExampleStaticDescription", 0);
-      
-
-      
+    
+      Method indexOfObject = class_getClassMethod([TestDescriptionRunner class], @selector(run));
+      const char *types = method_getTypeEncoding(indexOfObject);
+      objc_registerClassPair(myExampleStaticDescription);
+    
+      Class metaClass = objc_getMetaClass("myExampleStaticDescription");
+      class_addProtocol(myExampleStaticDescription, @protocol(DescriptionRunner));
+      class_addMethod(metaClass, @selector(run), (IMP)run, types);
+    
       [runner runAllDescriptions];
-
+    
+      if (ranMeToo == NO) 
+        FAIL(@"Should have run the dynamically created class, didn't cause it's a jerk");
     })
     
   );
