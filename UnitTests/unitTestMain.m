@@ -266,6 +266,22 @@ static void run()
 {
   ranMeToo = YES;
 }
+
+Class CreateExampleStaticDescription(const char *name)
+{
+  Class myExampleStaticDescription = objc_allocateClassPair([NSObject class], name, 0);
+
+  Method indexOfObject = class_getClassMethod([TestDescriptionRunner class], @selector(run));
+  const char *types = method_getTypeEncoding(indexOfObject);
+  objc_registerClassPair(myExampleStaticDescription);
+
+  Class metaClass = objc_getMetaClass(name);
+  class_addProtocol(myExampleStaticDescription, @protocol(DescriptionRunner));
+  class_addMethod(metaClass, @selector(run), (IMP) run, types);
+
+  return myExampleStaticDescription;
+}
+
   
 @implementation TestClass
 
@@ -367,25 +383,45 @@ static void run()
     
     IT(@"Should call the run method on all classes that conform to the description protocol", ^{      
       OCSpecDescriptionRunner *runner = [[[OCSpecDescriptionRunner alloc] init] autorelease];
-      Class myExampleStaticDescription = objc_allocateClassPair([NSObject class], "myExampleStaticDescription", 0);
-    
-      Method indexOfObject = class_getClassMethod([TestDescriptionRunner class], @selector(run));
-      const char *types = method_getTypeEncoding(indexOfObject);
-      objc_registerClassPair(myExampleStaticDescription);
-    
-      Class metaClass = objc_getMetaClass("myExampleStaticDescription");
-      class_addProtocol(myExampleStaticDescription, @protocol(DescriptionRunner));
-      class_addMethod(metaClass, @selector(run), (IMP)run, types);
-    
+      Class myExampleStaticDescription = CreateExampleStaticDescription("myExampleStaticDescription");
+   
       [runner runAllDescriptions];
     
       if (ranMeToo == NO) 
         FAIL(@"Should have run the dynamically created class, didn't cause it's a jerk");
+
+      objc_disposeClassPair(myExampleStaticDescription);
+    }),
+
+    IT(@"Should write the final results to its outputter", ^{
+      OCSpecDescriptionRunner *runner = [[[OCSpecDescriptionRunner alloc] init] autorelease];
+      NSString *outputterPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"test.txt"];
+      NSFileManager *fileManager = [[[NSFileManager alloc] init] autorelease];
+      [fileManager createFileAtPath:outputterPath contents:nil attributes:nil];
+      NSFileHandle *outputter = [NSFileHandle fileHandleForWritingAtPath:outputterPath];
+      runner.outputter = outputter;
+
+      [runner runAllDescriptions];
+
+      NSFileHandle *inputFile = [NSFileHandle fileHandleForReadingAtPath:outputterPath];
+
+      NSString *outputException = [[[NSString alloc] initWithData:[inputFile readDataToEndOfFile] 
+                                                         encoding:NSUTF8StringEncoding] autorelease];
+
+      if ([outputException compare:@"Tests ran with 0 passing tests and 0 failing tests\n"] != 0)
+      {
+        FAIL(@"Final test message was not written to the outputter");
+      }
+
+      [fileManager removeItemAtPath:outputterPath error:NULL];
     })
-    
+
+    // Need to pass outputter through
+    // Total up results
+    // These Describes need to create this class.
+
   );
-      
-    
+  
   gameDescription.outputter = [NSFileHandle fileHandleWithStandardError];
   [gameDescription describe];
   
@@ -403,13 +439,10 @@ static void run()
 
   NSLog(@"Tests ran with %d passing tests and %d failing tests", successes, errors);
   
-  // You should terminate with the number of failures
   [app performSelector:@selector(_terminateWithStatus:) withObject:(id) errors];
 }
 
 @end
-
-
 
 int main(int argc, char *argv[]) 
 {  
