@@ -60,6 +60,33 @@ static BOOL ranDescription = NO;
 
 @end
 
+NSString *OutputterPath()
+{
+  return [NSTemporaryDirectory() stringByAppendingPathComponent:@"test.txt"];
+}
+
+NSFileHandle *GetTemporaryFileHandle()
+{
+  NSFileManager *fileManager = [[[NSFileManager alloc] init] autorelease];
+  [fileManager createFileAtPath:OutputterPath() contents:nil attributes:nil];
+  return [NSFileHandle fileHandleForWritingAtPath:OutputterPath()]; 
+}
+
+NSString *ReadTemporaryFile()
+{
+  NSString *outputterPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"test.txt"];
+  NSFileHandle *inputFile = [NSFileHandle fileHandleForReadingAtPath:outputterPath];
+  return [[[NSString alloc] initWithData:[inputFile readDataToEndOfFile] 
+                                encoding:NSUTF8StringEncoding] autorelease];
+}
+
+void DeleteTemporaryFile()
+{
+  NSString *outputterPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"test.txt"];
+  NSFileManager *fileManager = [[[NSFileManager alloc] init] autorelease];
+  [fileManager removeItemAtPath:outputterPath error:NULL];
+}
+
 
 void testDescribeWithNoErrors()
 {
@@ -89,44 +116,30 @@ void testDescribeWithOneError()
 
 void testExampleWritesExceptionToOutputter()
 {
-  NSString *outputterPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"test.txt"];
-  NSFileManager *fileManager = [[[NSFileManager alloc] init] autorelease];
-  [fileManager createFileAtPath:outputterPath contents:nil attributes:nil];
-  NSFileHandle *outputter = [NSFileHandle fileHandleForWritingAtPath:outputterPath];
-
   OCSpecExample *example = [[[OCSpecExample alloc] initWithBlock:^{ FAIL(@"FAIL"); }] autorelease];
-  example.outputter = outputter;
+  example.outputter = GetTemporaryFileHandle();
   
   [example run];
   
-  NSFileHandle *inputFile = [NSFileHandle fileHandleForReadingAtPath:outputterPath];
-  NSString *outputException = [[[NSString alloc] initWithData:[inputFile readDataToEndOfFile] 
-                                                     encoding:NSUTF8StringEncoding] autorelease];
+  NSString *outputException = ReadTemporaryFile();
+  
   if (outputException.length == 0)
   {
     FAIL(@"An exception should have been written to the outputter - but wasn't.");
   }
   
-  [fileManager removeItemAtPath:outputterPath error:NULL];
+  DeleteTemporaryFile();
 }
 
 void testExceptionFormat()
 {
-  NSString *outputterPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"test.txt"];
-  NSFileManager *fileManager = [[[NSFileManager alloc] init] autorelease];
-  [fileManager createFileAtPath:outputterPath contents:nil attributes:nil];
-  NSFileHandle *outputter = [NSFileHandle fileHandleForWritingAtPath:outputterPath];
-  
   int outputLine = __LINE__ + 1;
   OCSpecExample *example = [[[OCSpecExample alloc] initWithBlock:^{ FAIL(@"FAIL"); }] autorelease];
-  example.outputter = outputter;
+  example.outputter = GetTemporaryFileHandle();
   
   [example run];
 
-  NSFileHandle *inputFile = [NSFileHandle fileHandleForReadingAtPath:outputterPath];
-
-  NSString *outputException = [[[NSString alloc] initWithData:[inputFile readDataToEndOfFile] 
-                                                     encoding:NSUTF8StringEncoding] autorelease];
+  NSString *outputException = ReadTemporaryFile();
 
   NSString *errorFormat = [NSString stringWithFormat:@"%s:%ld: error: %@\n",
            __FILE__,
@@ -139,46 +152,14 @@ void testExceptionFormat()
     NSString *failMessage = [NSString stringWithFormat:@"%@ expected, received %@", errorFormat, outputException];
     FAIL(failMessage);
   }
-  
-  [fileManager removeItemAtPath:outputterPath error:NULL];
-}
 
-// You are gonna need a setup/teardown sooner rather than later
-// before/after
-//
-NSString *OutputterPath()
-{
-  return [NSTemporaryDirectory() stringByAppendingPathComponent:@"test.txt"];
-}
-
-NSFileHandle *GetTemporaryFileHandle()
-{
-  NSFileManager *fileManager = [[[NSFileManager alloc] init] autorelease];
-  [fileManager createFileAtPath:OutputterPath() contents:nil attributes:nil];
-  return [NSFileHandle fileHandleForWritingAtPath:OutputterPath()]; 
-}
-
-NSString *ReadTemporaryFile()
-{
-  NSString *outputterPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"test.txt"];
-  NSFileHandle *inputFile = [NSFileHandle fileHandleForReadingAtPath:outputterPath];
-  return [[[NSString alloc] initWithData:[inputFile readDataToEndOfFile] 
-                                encoding:NSUTF8StringEncoding] autorelease];
-}
-
-void DeleteTemporaryFile()
-{
-  NSString *outputterPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"test.txt"];
-  NSFileManager *fileManager = [[[NSFileManager alloc] init] autorelease];
-  [fileManager removeItemAtPath:outputterPath error:NULL];
+  DeleteTemporaryFile();  
 }
 
 void testDescribeWithErrorWritesExceptionToOutputter()
 {
-  NSFileHandle *outputter = GetTemporaryFileHandle(); 
-  
   OCSpecDescription *description = [[[OCSpecDescription alloc] init] autorelease];
-  description.outputter = outputter;
+  description.outputter = GetTemporaryFileHandle();
   
   OCSpecExample *example = [[[OCSpecExample alloc] initWithBlock:^{ FAIL(@"FAIL"); }] autorelease];
   NSArray *tests = [NSArray arrayWithObject: example];
@@ -239,7 +220,6 @@ void testDescribeWorksWithMultipleSuccesses()
     FAIL(@"Should have had two successes, didn't");
   }
 }
-  
 
 void testGameCallsUpdateOnControllerWithDelta()
 {
@@ -476,7 +456,6 @@ Class CreateExampleStaticDescription(const char *name)
 
 
     // Need to pass outputter through
-    // Total up results
     // These Describes need to create this class.
 
   );
