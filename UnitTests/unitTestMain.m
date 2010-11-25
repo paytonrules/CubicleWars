@@ -136,13 +136,37 @@ void testExceptionFormat()
 
 // You are gonna need a setup/teardown sooner rather than later
 // before/after
+//
+NSString *OutputterPath()
+{
+  return [NSTemporaryDirectory() stringByAppendingPathComponent:@"test.txt"];
+}
 
-void testDescribeWithErrorWritesExceptionToOutputter()
+NSFileHandle *GetTemporaryFileHandle()
+{
+  NSFileManager *fileManager = [[[NSFileManager alloc] init] autorelease];
+  [fileManager createFileAtPath:OutputterPath() contents:nil attributes:nil];
+  return [NSFileHandle fileHandleForWritingAtPath:OutputterPath()]; 
+}
+
+NSString *ReadTemporaryFile()
+{
+  NSString *outputterPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"test.txt"];
+  NSFileHandle *inputFile = [NSFileHandle fileHandleForReadingAtPath:outputterPath];
+  return [[[NSString alloc] initWithData:[inputFile readDataToEndOfFile] 
+                                encoding:NSUTF8StringEncoding] autorelease];
+}
+
+void DeleteTemporaryFile()
 {
   NSString *outputterPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"test.txt"];
   NSFileManager *fileManager = [[[NSFileManager alloc] init] autorelease];
-  [fileManager createFileAtPath:outputterPath contents:nil attributes:nil];
-  NSFileHandle *outputter = [NSFileHandle fileHandleForWritingAtPath:outputterPath];
+  [fileManager removeItemAtPath:outputterPath error:NULL];
+}
+
+void testDescribeWithErrorWritesExceptionToOutputter()
+{
+  NSFileHandle *outputter = GetTemporaryFileHandle(); 
   
   OCSpecDescription *description = [[[OCSpecDescription alloc] init] autorelease];
   description.outputter = outputter;
@@ -151,18 +175,14 @@ void testDescribeWithErrorWritesExceptionToOutputter()
   NSArray *tests = [NSArray arrayWithObject: example];
   
   [description describe:@"It Should Do Something" onArrayOfExamples: tests];
-  
-  NSFileHandle *inputFile = [NSFileHandle fileHandleForReadingAtPath:outputterPath];
-  
-  NSString *outputException = [[[NSString alloc] initWithData:[inputFile readDataToEndOfFile] 
-                                                encoding:NSUTF8StringEncoding] autorelease];
-  
+
+  NSString *outputException = ReadTemporaryFile();  
   if (outputException.length == 0)
   {
     FAIL(@"An exception should have been written to the outputter - but wasn't.");
   }
-  
-  [fileManager removeItemAtPath:outputterPath error:NULL];
+
+  DeleteTemporaryFile();
 }
 
 void testDefaultOutputterIsStandardError()
