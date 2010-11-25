@@ -87,6 +87,45 @@ void DeleteTemporaryFile()
   [fileManager removeItemAtPath:outputterPath error:NULL];
 }
 
+@protocol DescriptionRunnerForTest<DescriptionRunner>
+ -(void) setSuccesses:(int) numSuccesses;
+@end
+
+static BOOL ranMeToo;
+static void run(id self, SEL _cmd)
+{
+  ranMeToo = YES;
+}
+
+static int classLevelSuccesses = 0;
+static void setSuccesses(id self, SEL _cmd, int numSuccesses)
+{
+  NSLog(@"Setting successes to %d because it is currently %d", numSuccesses, classLevelSuccesses);
+  classLevelSuccesses = numSuccesses;
+}
+
+static NSNumber *getSuccesses(id self, SEL _cmd)
+{
+  return [NSNumber numberWithInt: classLevelSuccesses];
+}
+
+Class CreateExampleStaticDescription(const char *name)
+{
+  Class myExampleStaticDescription = objc_allocateClassPair([NSObject class], name, 0);
+
+  Method indexOfObject = class_getClassMethod([TestDescriptionRunner class], @selector(run));
+  const char *types = method_getTypeEncoding(indexOfObject);
+  objc_registerClassPair(myExampleStaticDescription);
+
+  class_addProtocol(myExampleStaticDescription, @protocol(DescriptionRunnerForTest));
+  class_addMethod(object_getClass([myExampleStaticDescription class]), @selector(run), (IMP) run, types);
+  class_addMethod(object_getClass([myExampleStaticDescription class]), @selector(getSuccesses), (IMP) getSuccesses, types);
+  indexOfObject = class_getClassMethod([TestDescriptionRunner class], @selector(setSuccesses:));
+  types = method_getTypeEncoding(indexOfObject);
+  class_addMethod(object_getClass([myExampleStaticDescription class]), @selector(setSuccesses:), (IMP) setSuccesses, types);
+
+  return myExampleStaticDescription;
+}
 
 void testDescribeWithNoErrors()
 {
@@ -270,43 +309,6 @@ void testDescribeMacro()
   }
 }
 
-static BOOL ranMeToo;
-static void run(id self, SEL _cmd)
-{
-  ranMeToo = YES;
-}
-
-static int classLevelSuccesses = 0;
-static void setSuccesses(id self, SEL _cmd, int numSuccesses)
-{
-  NSLog(@"Setting successes to %d because it is currently %d", numSuccesses, classLevelSuccesses);
-  classLevelSuccesses = numSuccesses;
-}
-
-static NSNumber *getSuccesses(id self, SEL _cmd)
-{
-  return [NSNumber numberWithInt: classLevelSuccesses];
-}
-
-Class CreateExampleStaticDescription(const char *name)
-{
-  Class myExampleStaticDescription = objc_allocateClassPair([NSObject class], name, 0);
-
-  Method indexOfObject = class_getClassMethod([TestDescriptionRunner class], @selector(run));
-  const char *types = method_getTypeEncoding(indexOfObject);
-  objc_registerClassPair(myExampleStaticDescription);
-
-  class_addProtocol(myExampleStaticDescription, @protocol(DescriptionRunner));
-  class_addMethod(object_getClass([myExampleStaticDescription class]), @selector(run), (IMP) run, types);
-  class_addMethod(object_getClass([myExampleStaticDescription class]), @selector(getSuccesses), (IMP) getSuccesses, types);
-  indexOfObject = class_getClassMethod([TestDescriptionRunner class], @selector(setSuccesses:));
-  types = method_getTypeEncoding(indexOfObject);
-  class_addMethod(object_getClass([myExampleStaticDescription class]), @selector(setSuccesses:), (IMP) setSuccesses, types);
-
-  return myExampleStaticDescription;
-}
-
-  
 @implementation TestClass
 
 
