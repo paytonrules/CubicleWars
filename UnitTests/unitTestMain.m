@@ -48,8 +48,17 @@ static BOOL ranDescription = NO;
   ranDescription = YES;
 }
 
-@end
++(NSNumber *) getSuccesses
+{
+  NSLog(@"Entered the TestDescriptionRunner getSuccesses");
+  return [NSNumber numberWithInt:0];
+}
 
++(void) setSuccess:(int) number
+{
+}
+
+@end
 
 
 void testDescribeWithNoErrors()
@@ -282,9 +291,21 @@ void testDescribeMacro()
 }
 
 static BOOL ranMeToo;
-static void run()
+static void run(id self, SEL _cmd)
 {
   ranMeToo = YES;
+}
+
+static int classLevelSuccesses = 0;
+static void setSuccesses(id self, SEL _cmd, int numSuccesses)
+{
+  NSLog(@"Setting successes to %d because it is currently %d", numSuccesses, classLevelSuccesses);
+  classLevelSuccesses = numSuccesses;
+}
+
+static NSNumber *getSuccesses()
+{
+  return [NSNumber numberWithInt: classLevelSuccesses];
 }
 
 Class CreateExampleStaticDescription(const char *name)
@@ -298,6 +319,10 @@ Class CreateExampleStaticDescription(const char *name)
   Class metaClass = objc_getMetaClass(name);
   class_addProtocol(myExampleStaticDescription, @protocol(DescriptionRunner));
   class_addMethod(metaClass, @selector(run), (IMP) run, types);
+  class_addMethod(metaClass, @selector(getSuccesses), (IMP) getSuccesses, types);
+  indexOfObject = class_getClassMethod([TestDescriptionRunner class], @selector(setSuccesses:));
+  types = method_getTypeEncoding(indexOfObject);
+  class_addMethod(metaClass, @selector(setSuccesses:), (IMP) setSuccesses, types);
 
   return myExampleStaticDescription;
 }
@@ -415,6 +440,7 @@ Class CreateExampleStaticDescription(const char *name)
 
     IT(@"Should write the final results to its outputter", ^{
       OCSpecDescriptionRunner *runner = [[[OCSpecDescriptionRunner alloc] init] autorelease];
+
       NSString *outputterPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"test.txt"];
       NSFileManager *fileManager = [[[NSFileManager alloc] init] autorelease];
       [fileManager createFileAtPath:outputterPath contents:nil attributes:nil];
@@ -434,7 +460,33 @@ Class CreateExampleStaticDescription(const char *name)
       }
 
       [fileManager removeItemAtPath:outputterPath error:NULL];
+    }),
+
+    IT(@"Should total up the successes in the outputters message", ^{
+      OCSpecDescriptionRunner *runner = [[[OCSpecDescriptionRunner alloc] init] autorelease];
+      Class myExampleStaticDescription = CreateExampleStaticDescription("myExampleStaticDescription");
+      [myExampleStaticDescription setSuccesses:3];
+
+      NSString *outputterPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"test.txt"];
+      NSFileManager *fileManager = [[[NSFileManager alloc] init] autorelease];
+      [fileManager createFileAtPath:outputterPath contents:nil attributes:nil];
+      NSFileHandle *outputter = [NSFileHandle fileHandleForWritingAtPath:outputterPath];
+      runner.outputter = outputter;
+
+      [runner runAllDescriptions];
+      
+      NSFileHandle *inputFile = [NSFileHandle fileHandleForReadingAtPath:outputterPath];
+
+      NSString *outputException = [[[NSString alloc] initWithData:[inputFile readDataToEndOfFile] 
+                                                         encoding:NSUTF8StringEncoding] autorelease];
+
+      if ([outputException compare:@"Tests ran with 3 passing tests and 0 failing tests\n"] != 0)
+      {
+        NSLog(@"output message is %@", outputException);
+        FAIL(@"The wrong number of passing tests was written");
+      }
     })
+
 
     // Need to pass outputter through
     // Total up results

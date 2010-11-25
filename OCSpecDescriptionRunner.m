@@ -35,17 +35,22 @@
     if ([self isDescriptionRunner:currClass])
     {
       [currClass run];
+      NSLog(@"Ran current class specs.  Successes before %d", successes);
+      successes += [[currClass getSuccesses] intValue]; 
+      NSLog(@"Ran current class specs.  Successes after %d", successes);
     }
   }
 }
 
 -(void) reportResults
 {
-  [outputter writeData:[@"Tests ran with 0 passing tests and 0 failing tests\n" dataUsingEncoding:NSUTF8StringEncoding]];
+  NSString *resultsMessage = [NSString stringWithFormat:@"Tests ran with %d passing tests and 0 failing tests\n", successes];
+  [outputter writeData:[resultsMessage dataUsingEncoding:NSUTF8StringEncoding]];
 }
 
 -(void) runAllDescriptions
 {
+  successes = 0;
   [self getListOfClassesInBundle];
   [self callRunOnEachStaticDescription];
   [self reportResults];

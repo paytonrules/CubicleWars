@@ -3,5 +3,6 @@
 @protocol DescriptionRunner
 
 +(void) run;
++(NSNumber *) getSuccesses;
 
 @end
