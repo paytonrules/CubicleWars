@@ -296,13 +296,12 @@ Class CreateExampleStaticDescription(const char *name)
   const char *types = method_getTypeEncoding(indexOfObject);
   objc_registerClassPair(myExampleStaticDescription);
 
-  Class metaClass = objc_getMetaClass(name);
   class_addProtocol(myExampleStaticDescription, @protocol(DescriptionRunner));
-  class_addMethod(metaClass, @selector(run), (IMP) run, types);
-  class_addMethod(metaClass, @selector(getSuccesses), (IMP) getSuccesses, types);
+  class_addMethod(object_getClass([myExampleStaticDescription class]), @selector(run), (IMP) run, types);
+  class_addMethod(object_getClass([myExampleStaticDescription class]), @selector(getSuccesses), (IMP) getSuccesses, types);
   indexOfObject = class_getClassMethod([TestDescriptionRunner class], @selector(setSuccesses:));
   types = method_getTypeEncoding(indexOfObject);
-  class_addMethod(metaClass, @selector(setSuccesses:), (IMP) setSuccesses, types);
+  class_addMethod(object_getClass([myExampleStaticDescription class]), @selector(setSuccesses:), (IMP) setSuccesses, types);
 
   return myExampleStaticDescription;
 }
