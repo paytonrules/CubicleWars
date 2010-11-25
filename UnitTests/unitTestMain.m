@@ -303,7 +303,7 @@ static void setSuccesses(id self, SEL _cmd, int numSuccesses)
   classLevelSuccesses = numSuccesses;
 }
 
-static NSNumber *getSuccesses()
+static NSNumber *getSuccesses(id self, SEL _cmd)
 {
   return [NSNumber numberWithInt: classLevelSuccesses];
 }
@@ -463,28 +463,23 @@ Class CreateExampleStaticDescription(const char *name)
     }),
 
     IT(@"Should total up the successes in the outputters message", ^{
-      OCSpecDescriptionRunner *runner = [[[OCSpecDescriptionRunner alloc] init] autorelease];
       Class myExampleStaticDescription = CreateExampleStaticDescription("myExampleStaticDescription");
       [myExampleStaticDescription setSuccesses:3];
 
-      NSString *outputterPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"test.txt"];
-      NSFileManager *fileManager = [[[NSFileManager alloc] init] autorelease];
-      [fileManager createFileAtPath:outputterPath contents:nil attributes:nil];
-      NSFileHandle *outputter = [NSFileHandle fileHandleForWritingAtPath:outputterPath];
-      runner.outputter = outputter;
+      OCSpecDescriptionRunner *runner = [[[OCSpecDescriptionRunner alloc] init] autorelease];
+      runner.outputter = GetTemporaryFileHandle();
 
       [runner runAllDescriptions];
       
-      NSFileHandle *inputFile = [NSFileHandle fileHandleForReadingAtPath:outputterPath];
-
-      NSString *outputException = [[[NSString alloc] initWithData:[inputFile readDataToEndOfFile] 
-                                                         encoding:NSUTF8StringEncoding] autorelease];
+      NSString *outputException = ReadTemporaryFile();  
 
       if ([outputException compare:@"Tests ran with 3 passing tests and 0 failing tests\n"] != 0)
       {
         NSLog(@"output message is %@", outputException);
         FAIL(@"The wrong number of passing tests was written");
       }
+
+      DeleteTemporaryFile();
     })
 
 
