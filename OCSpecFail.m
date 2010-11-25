@@ -2,7 +2,6 @@
 
 @implementation OCSpecFail
 
-
 +(void) fail:(NSString *)reason atLine:(NSInteger) line inFile: (NSString *)file
 {
   NSException *exception = [NSException exceptionWithName:@"Test Failed"
