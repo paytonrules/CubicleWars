@@ -440,26 +440,18 @@ Class CreateExampleStaticDescription(const char *name)
 
     IT(@"Should write the final results to its outputter", ^{
       OCSpecDescriptionRunner *runner = [[[OCSpecDescriptionRunner alloc] init] autorelease];
-
-      NSString *outputterPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"test.txt"];
-      NSFileManager *fileManager = [[[NSFileManager alloc] init] autorelease];
-      [fileManager createFileAtPath:outputterPath contents:nil attributes:nil];
-      NSFileHandle *outputter = [NSFileHandle fileHandleForWritingAtPath:outputterPath];
-      runner.outputter = outputter;
+      runner.outputter = GetTemporaryFileHandle();
 
       [runner runAllDescriptions];
 
-      NSFileHandle *inputFile = [NSFileHandle fileHandleForReadingAtPath:outputterPath];
-
-      NSString *outputException = [[[NSString alloc] initWithData:[inputFile readDataToEndOfFile] 
-                                                         encoding:NSUTF8StringEncoding] autorelease];
-
+      NSString *outputException = ReadTemporaryFile();  
+      
       if ([outputException compare:@"Tests ran with 0 passing tests and 0 failing tests\n"] != 0)
       {
         FAIL(@"Final test message was not written to the outputter");
       }
 
-      [fileManager removeItemAtPath:outputterPath error:NULL];
+      DeleteTemporaryFile();
     }),
 
     IT(@"Should total up the successes in the outputters message", ^{
