@@ -450,6 +450,7 @@ void testDescribeMacro()
       }
 
       DeleteTemporaryFile();
+      objc_disposeClassPair(myExampleStaticDescription);
     })
 
 
