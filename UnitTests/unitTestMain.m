@@ -53,7 +53,7 @@ static BOOL ranDescription = NO;
   return [NSNumber numberWithInt:0];
 }
 
-+(void) setSuccess:(int) number
++(void) setSuccesses:(int) number
 {
 }
 
