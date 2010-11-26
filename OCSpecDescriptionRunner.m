@@ -35,9 +35,7 @@
     if ([self isDescriptionRunner:currClass])
     {
       [currClass run];
-      NSLog(@"Ran current class specs.  Successes before %d", successes);
       successes += [[currClass getSuccesses] intValue]; 
-      NSLog(@"Ran current class specs.  Successes after %d", successes);
     }
   }
 }
