@@ -50,7 +50,6 @@ static BOOL ranDescription = NO;
 
 +(NSNumber *) getSuccesses
 {
-  NSLog(@"Entered the TestDescriptionRunner getSuccesses");
   return [NSNumber numberWithInt:0];
 }
 
@@ -100,7 +99,6 @@ static void run(id self, SEL _cmd)
 static int classLevelSuccesses = 0;
 static void setSuccesses(id self, SEL _cmd, int numSuccesses)
 {
-  NSLog(@"Setting successes to %d because it is currently %d", numSuccesses, classLevelSuccesses);
   classLevelSuccesses = numSuccesses;
 }
 
@@ -448,7 +446,6 @@ void testDescribeMacro()
 
       if ([outputException compare:@"Tests ran with 3 passing tests and 0 failing tests\n"] != 0)
       {
-        NSLog(@"output message is %@", outputException);
         FAIL(@"The wrong number of passing tests was written");
       }
 
