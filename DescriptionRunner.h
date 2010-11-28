@@ -4,5 +4,6 @@
 
 +(void) run;
 +(NSNumber *) getSuccesses;
++(NSNumber *) getFailures;
 
 @end

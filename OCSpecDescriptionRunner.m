@@ -36,19 +36,22 @@
     {
       [currClass run];
       successes += [[currClass getSuccesses] intValue]; 
+      failures += [[currClass getFailures] intValue];
     }
   }
 }
 
 -(void) reportResults
 {
-  NSString *resultsMessage = [NSString stringWithFormat:@"Tests ran with %d passing tests and 0 failing tests\n", successes];
+  NSLog(@"The failures is: %d", failures);
+  NSString *resultsMessage = [NSString stringWithFormat:@"Tests ran with %d passing tests and %d failing tests\n", successes, failures];
   [outputter writeData:[resultsMessage dataUsingEncoding:NSUTF8StringEncoding]];
 }
 
 -(void) runAllDescriptions
 {
   successes = 0;
+  failures = 0;
   [self getListOfClassesInBundle];
   [self callRunOnEachStaticDescription];
   [self reportResults];

@@ -57,6 +57,11 @@ static BOOL ranDescription = NO;
 {
 }
 
++(NSNumber *) getFailures
+{
+  return [NSNumber numberWithInt:0];
+}
+
 @end
 
 NSString *OutputterPath()
@@ -87,7 +92,8 @@ void DeleteTemporaryFile()
 }
 
 @protocol DescriptionRunnerForTest<DescriptionRunner>
- -(void) setSuccesses:(int) numSuccesses;
+ +(void) setSuccesses:(int) numSuccesses;
+ +(void) setFailures:(int) numFailures;
 @end
 
 static BOOL ranMeToo;
@@ -107,6 +113,17 @@ static NSNumber *getSuccesses(id self, SEL _cmd)
   return [NSNumber numberWithInt: classLevelSuccesses];
 }
 
+static int classLevelFailures = 0;
+static void setFailures(id self, SEL _cmd, int numFailures)
+{
+  classLevelFailures = numFailures;
+}
+
+static NSNumber *getFailures(id self, SEL _cmd)
+{
+  return [NSNumber numberWithInt: classLevelFailures];
+}
+
 Class CreateExampleStaticDescription(const char *name)
 {
   Class myExampleStaticDescription = objc_allocateClassPair([NSObject class], name, 0);
@@ -118,9 +135,11 @@ Class CreateExampleStaticDescription(const char *name)
   class_addProtocol(myExampleStaticDescription, @protocol(DescriptionRunnerForTest));
   class_addMethod(object_getClass([myExampleStaticDescription class]), @selector(run), (IMP) run, types);
   class_addMethod(object_getClass([myExampleStaticDescription class]), @selector(getSuccesses), (IMP) getSuccesses, types);
+  class_addMethod(object_getClass([myExampleStaticDescription class]), @selector(getFailures), (IMP) getFailures, types);
   indexOfObject = class_getClassMethod([TestDescriptionRunner class], @selector(setSuccesses:));
   types = method_getTypeEncoding(indexOfObject);
   class_addMethod(object_getClass([myExampleStaticDescription class]), @selector(setSuccesses:), (IMP) setSuccesses, types);
+  class_addMethod(object_getClass([myExampleStaticDescription class]), @selector(setFailures:), (IMP) setFailures, types);
 
   return myExampleStaticDescription;
 }
@@ -436,6 +455,7 @@ void testDescribeMacro()
     IT(@"Should total up the successes in the outputters message", ^{
       Class myExampleStaticDescription = CreateExampleStaticDescription("myExampleStaticDescription");
       [myExampleStaticDescription setSuccesses:3];
+      [myExampleStaticDescription setFailures: 0];
 
       OCSpecDescriptionRunner *runner = [[[OCSpecDescriptionRunner alloc] init] autorelease];
       runner.outputter = GetTemporaryFileHandle();
@@ -451,8 +471,28 @@ void testDescribeMacro()
 
       DeleteTemporaryFile();
       objc_disposeClassPair(myExampleStaticDescription);
-    })
+    }),
 
+    IT(@"Should total up the errors in the final message", ^{
+      Class myExampleStaticDescription = CreateExampleStaticDescription("myExampleStaticDescription");
+      [myExampleStaticDescription setFailures:3];
+      [myExampleStaticDescription setSuccesses:0];
+      
+      OCSpecDescriptionRunner *runner = [[[OCSpecDescriptionRunner alloc] init] autorelease];
+      runner.outputter = GetTemporaryFileHandle();
+
+      [runner runAllDescriptions];
+
+      NSString *outputException = ReadTemporaryFile();  
+
+      if ([outputException compare:@"Tests ran with 0 passing tests and 3 failing tests\n"] != 0)
+      {
+        FAIL(@"The wrong number of failing tests was written");
+      }
+      
+      DeleteTemporaryFile();
+      objc_disposeClassPair(myExampleStaticDescription);
+    })
 
     // Need to pass outputter through
     // These Describes need to create this class.

@@ -6,6 +6,7 @@
   NSInteger     classCount;
   NSFileHandle  *outputter;
   int           successes;
+  int           failures;
 }
 
 @property(nonatomic, retain) NSFileHandle *outputter;
