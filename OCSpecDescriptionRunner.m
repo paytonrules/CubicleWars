@@ -6,11 +6,21 @@
 
 @implementation OCSpecDescriptionRunner
 
-@synthesize outputter;
+@synthesize outputter, specProtocol;
+
+-(id) init
+{
+  if (self = [super init])
+  {
+    specProtocol = @protocol(DescriptionRunner);
+  }
+
+  return self;
+}
 
 -(BOOL) isDescriptionRunner:(Class) klass
 {
-  return class_respondsToSelector(klass, @selector(conformsToProtocol:)) && [klass conformsToProtocol:@protocol(DescriptionRunner)]; 
+  return class_respondsToSelector(klass, @selector(conformsToProtocol:)) && [klass conformsToProtocol:specProtocol]; 
 }
 
 -(void) getListOfClassesInBundle
@@ -43,7 +53,6 @@
 
 -(void) reportResults
 {
-  NSLog(@"The failures is: %d", failures);
   NSString *resultsMessage = [NSString stringWithFormat:@"Tests ran with %d passing tests and %d failing tests\n", successes, failures];
   [outputter writeData:[resultsMessage dataUsingEncoding:NSUTF8StringEncoding]];
 }

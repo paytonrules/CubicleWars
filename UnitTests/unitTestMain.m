@@ -144,6 +144,9 @@ Class CreateExampleStaticDescription(const char *name)
   return myExampleStaticDescription;
 }
 
+@protocol test
+@end
+
 void testDescribeWithNoErrors()
 {
   OCSpecDescription *description = [[[OCSpecDescription alloc] init] autorelease];
@@ -492,13 +495,31 @@ void testDescribeMacro()
       
       DeleteTemporaryFile();
       objc_disposeClassPair(myExampleStaticDescription);
+    }),
+
+    IT(@"allows you to look for a different protocol in the runner, and wont run the tests if they don't conform", ^{
+      Class myExampleStaticDescription = CreateExampleStaticDescription("myExampleStaticDescription");
+      [myExampleStaticDescription setFailures:1];
+
+      OCSpecDescriptionRunner *runner = [[[OCSpecDescriptionRunner alloc] init] autorelease];
+      runner.specProtocol = @protocol(test);
+      runner.outputter = GetTemporaryFileHandle();
+
+      [runner runAllDescriptions];
+
+      NSString *outputException = ReadTemporaryFile();
+
+      if ([outputException compare:@"Tests ran with 0 passing tests and 0 failing tests\n"] != 0)
+      {
+        FAIL(@"The tests didn't run");
+      }
     })
 
     // Need to pass outputter through
     // These Describes need to create this class.
 
   );
-  
+
   gameDescription.outputter = [NSFileHandle fileHandleWithStandardError];
   [gameDescription describe];
   
