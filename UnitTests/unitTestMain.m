@@ -513,6 +513,10 @@ void testDescribeMacro()
       {
         FAIL(@"The tests didn't run");
       }
+    }), 
+    
+    IT(@"Generates these classes in the describe block, rather than making a simple run on an array", ^{
+      FAIL(@"Too tired to write this test");
     })
 
     // Need to pass outputter through

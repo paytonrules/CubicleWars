@@ -6,7 +6,7 @@
 
 @implementation OCSpecDescriptionRunner
 
-@synthesize outputter, specProtocol;
+@synthesize outputter, specProtocol, successes, failures;
 
 -(id) init
 {
