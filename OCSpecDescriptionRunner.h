@@ -36,7 +36,7 @@ static OCSpecDescription *desc__FILE____LINE__; \
   } \
   +(NSNumber *)getFailures \
   { \
-    return [NSNumber numberWithInt:0];\
+    return [NSNumber numberWithInt:[desc__FILE____LINE__ errors]];\
   } \
   +(NSNumber *)getSuccesses \
   { \
