@@ -24,23 +24,22 @@
 #define IDARRAY(...) ((id[]){ __VA_ARGS__ })
 #define IDCOUNT(...) (sizeof(IDARRAY(__VA_ARGS__)) / sizeof(id))
 
-#define DESCRIBE(description, ...) \
-static OCSpecDescription *desc__FILE____LINE__; \
-@interface TestRunner : NSObject<DescriptionRunner> \
-@end \
-@implementation TestRunner \
-  +(void) run \
-  { \
-    desc__FILE____LINE__ = [[[OCSpecDescription alloc] initWithName:description examples:ARRAY(__VA_ARGS__)] autorelease]; \
-    [desc__FILE____LINE__ describe]; \
-  } \
-  +(NSNumber *)getFailures \
-  { \
-    return [NSNumber numberWithInt:[desc__FILE____LINE__ errors]];\
-  } \
-  +(NSNumber *)getSuccesses \
-  { \
-    return [NSNumber numberWithInt:[desc__FILE____LINE__ successes]];\
-  } \
+#define DESCRIBE(classname, ...)\
+static OCSpecDescription *desc##classname;\
+@interface TestRunner##classname : NSObject<DescriptionRunner>\
+@end\
+@implementation TestRunner##classname\
++(void) run \
+{ \
+desc##classname = [[[OCSpecDescription alloc] initWithName:@"##classname" examples:ARRAY(__VA_ARGS__)] autorelease]; \
+[desc##classname describe]; \
+} \
++(NSNumber *)getFailures \
+{ \
+return [NSNumber numberWithInt:[desc##classname errors]];\
+} \
++(NSNumber *)getSuccesses \
+{ \
+return [NSNumber numberWithInt:[desc##classname successes]];\
+} \
 @end
-

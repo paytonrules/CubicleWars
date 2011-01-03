@@ -1,7 +1,7 @@
 #import "OCSpec.h"
 #import "OCSpecExample.h"
 
-DESCRIBE(@"Test Description",
+DESCRIBE(TestSuccess,
   IT(@"Succeeds", ^{
   })
 );

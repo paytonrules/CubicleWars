@@ -7,6 +7,12 @@ DESCRIBE(Test1,
   })
 );
 
+DESCRIBE(Test2,
+  IT(@"Fails", ^{
+    // Success
+  })
+);
+
 @interface TestClass : NSObject
 -(void) applicationDidFinishLaunching:(UIApplication *)app;
 @end
@@ -23,7 +29,12 @@ DESCRIBE(Test1,
     if (runner.failures != 1)
     {
       FAIL(@"Did not run the failing test");
-    }     
+    }
+    
+    if (runner.successes != 1) 
+    {
+      FAIL(@"Did not run the successful test");
+    }
   }];
   
   [example run];
